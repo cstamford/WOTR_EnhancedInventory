@@ -5,6 +5,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Items;
 using Kingmaker.Blueprints.Items.Components;
 using Kingmaker.Blueprints.Items.Equipment;
+using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Items;
 using Kingmaker.Items.Parts;
 using Kingmaker.UI.Common;
@@ -32,12 +33,13 @@ namespace EnhancedInventory.Hooks
             else if (expanded_filter == ExpandedFilterType.UnlearnedScrolls)
             {
                 CopyScroll scroll = item.Blueprint.GetComponent<CopyScroll>();
-                __result = scroll != null && scroll.CanCopy(item, UIUtility.GetCurrentCharacter());
+                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                __result = scroll != null && unit != null && scroll.CanCopy(item, unit);
             }
             else if (expanded_filter == ExpandedFilterType.UnlearnedRecipes)
             {
                 CopyRecipe recipe = item.Blueprint.GetComponent<CopyRecipe>();
-                __result = recipe != null && recipe.CanCopy(item, UIUtility.GetCurrentCharacter());
+                __result = recipe != null && recipe.CanCopy(item, null);
             }
             else if (expanded_filter == ExpandedFilterType.UnreadDocuments)
             {
@@ -46,9 +48,10 @@ namespace EnhancedInventory.Hooks
             }
             else if (expanded_filter == ExpandedFilterType.UsableWithoutUMD)
             {
+                UnitEntityData unit = UIUtility.GetCurrentCharacter();
                 __result = item.Blueprint is BlueprintItemEquipmentUsable blueprint &&
                     (blueprint.Type == UsableItemType.Scroll || blueprint.Type == UsableItemType.Wand) &&
-                    !blueprint.IsUnitNeedUMDForUse(UIUtility.GetCurrentCharacter());
+                    unit != null && !blueprint.IsUnitNeedUMDForUse(unit);
             }
             else
             {
