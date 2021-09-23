@@ -1,0 +1,430 @@
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CheckEnvironmentVars">
+
+	<PropertyGroup>
+		<TargetFramework>net472</TargetFramework>
+		<AssemblyVersion>1.0.*</AssemblyVersion>
+		<FileVersion>1.0.0</FileVersion>
+		<Description></Description>
+		<PackageProjectUrl>https://github.com/cstamford/WOTR_EnhancedInventory</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/cstamford/WOTR_EnhancedInventory</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Configurations>Debug;Release;Debug Install;Release Install</Configurations>
+		<Authors>Xenofell</Authors>
+		<Company />
+		<Product />
+		<Copyright>Copyright 2021</Copyright>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<Version>0.0.2</Version>
+		<Deterministic>false</Deterministic>
+	</PropertyGroup>
+
+	<Target Name="CheckEnvironmentVars">
+		<Error Text="Please set the WrathInstallDir environment variable." Condition="'$(WrathInstallDir)' == ''" ContinueOnError="false" />
+	</Target>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Install|AnyCPU' Or '$(Configuration)|$(Platform)' == 'Release Install|AnyCPU'">
+		<OutputPath>$(WrathInstallDir)\Mods\EnhancedInventory\</OutputPath>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU' Or '$(Configuration)|$(Platform)'=='Debug Install|AnyCPU'">
+		<DefineConstants>DEBUG;TRACE</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release Install|AnyCPU'">
+		<Optimize>true</Optimize>
+		<DefineConstants>TRACE</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Install|AnyCPU'">
+		<Optimize>false</Optimize>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE</DefineConstants>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="Owlcat.Runtime.Core.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.Core_publicized.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Owlcat.Runtime.UI.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.UI_publicized.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Owlcat.Runtime.Visual.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.Visual_publicized.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Owlcat.Runtime.UniRx.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.UniRx_publicized.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Burst.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Burst.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Burst.Unsafe.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Burst.Unsafe.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Collections.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Collections.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Formats.Fbx.Runtime.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Formats.Fbx.Runtime.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Jobs.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Jobs.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Mathematics.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Mathematics.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.MemoryProfiler.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.MemoryProfiler.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.ProBuilder.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.ProBuilder.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.ProBuilder.KdTree.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.ProBuilder.KdTree.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.ProBuilder.Poly2Tri.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.ProBuilder.Poly2Tri.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.ProBuilder.Stl.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.ProBuilder.Stl.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Recorder.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Recorder.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.Runtime.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.RenderPipelines.Core.Runtime.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.Core.ShaderLibrary.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.RenderPipelines.Core.ShaderLibrary.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.ScriptableBuildPipeline.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.ScriptableBuildPipeline.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.TerrainTools.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.TerrainTools.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.TextMeshPro.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.TextMeshPro.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.Timeline.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Timeline.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Unity.VisualEffectGraph.Runtime.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.VisualEffectGraph.Runtime.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AccessibilityModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.AccessibilityModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AIModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.AIModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AndroidJNIModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.AndroidJNIModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AnimationModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.AnimationModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ARModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ARModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AssetBundleModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.AssetBundleModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.AudioModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.AudioModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ClothModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ClothModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ClusterInputModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ClusterInputModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ClusterRendererModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ClusterRendererModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.CoreModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CrashReportingModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.CrashReportingModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.DirectorModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.DirectorModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.DSPGraphModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.DSPGraphModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.GameCenterModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.GameCenterModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.GridModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.GridModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.HotReloadModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.HotReloadModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ImageConversionModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ImageConversionModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.IMGUIModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.IMGUIModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.InputLegacyModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.InputLegacyModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.InputModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.InputModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.JSONSerializeModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.JSONSerializeModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.LocalizationModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.LocalizationModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ParticleSystemModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ParticleSystemModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.PerformanceReportingModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.PerformanceReportingModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.Physics2DModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.Physics2DModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.PhysicsModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ProfilerModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ProfilerModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.ScreenCaptureModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.ScreenCaptureModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.SharedInternalsModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.SharedInternalsModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteMaskModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.SpriteMaskModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.SpriteShapeModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.SpriteShapeModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.StreamingModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.StreamingModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.SubstanceModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.SubstanceModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.SubsystemsModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.SubsystemsModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.TerrainModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TerrainPhysicsModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.TerrainPhysicsModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TextCoreModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.TextCoreModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.TextRenderingModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TilemapModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.TilemapModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TLSModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.TLSModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UI.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UI.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UIElementsModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UIElementsModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UIModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UmbraModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UmbraModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UNETModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UNETModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityAnalyticsModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityAnalyticsModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityConnectModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityConnectModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityTestProtocolModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityTestProtocolModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAssetBundleModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestAudioModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityWebRequestModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestTextureModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UnityWebRequestWWWModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.VehiclesModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.VehiclesModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.VFXModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.VFXModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.VideoModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.VideoModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.VRModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.VRModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.WindModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.WindModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityEngine.XRModule.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityEngine.XRModule.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="UnityModManager">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityModManager\UnityModManager.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="0Harmony">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityModManager\0Harmony.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Assembly-CSharp_publicized">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="NewtonSoft.Json">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\NewtonSoft.Json.dll'))</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UniRx.dll">
+			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UniRx.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md" Link="README.md">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Info.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Repository.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+</Project>
+
