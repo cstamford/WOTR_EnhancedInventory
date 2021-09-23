@@ -7,6 +7,6 @@
 	"LoadAfter": [ "InventorySearchBar", "WeightValueSorting", "HighlightImportantLoot" ], // legacy mods
 	"AssemblyName": "EnhancedInventory.dll",
 	"EntryMethod": "EnhancedInventory.Main.Load",
-	"Repository": "",
-	"HomePage": ""
+	"Repository": "https://raw.githubusercontent.com/cstamford/WOTR_EnhancedInventory/main/EnhancedInventory/Repository.json",
+	"HomePage": "https://www.nexusmods.com/pathfinderwrathoftherighteous/mods/137"
 }
