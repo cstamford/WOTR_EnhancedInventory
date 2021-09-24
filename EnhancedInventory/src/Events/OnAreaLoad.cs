@@ -44,23 +44,16 @@ namespace EnhancedInventory.Events
 
         private void LoadSearchBar()
         {
-            Transform prefab_transform = Game.Instance.UI.MainCanvas.transform.Find("ChargenPCView/ContentWrapper/DetailedViewZone/ChargenFeaturesDetailedPCView/FeatureSelectorPlace/FeatureSelectorView/FeatureSearchView");
-
-            if (prefab_transform == null)
-            {
-                Main.Logger.Error("Error: Unable to locate search bar prefab, it's likely a patch has changed the UI setup, or you are in an unexpected situation. Please report this bug!");
-                return;
-            }
-
             foreach (string path in m_inventory_paths)
             {
                 Transform filters_block_transform = Game.Instance.UI.MainCanvas.transform.Find(path);
 
                 if (filters_block_transform != null)
                 {
-                    GameObject search_bar = GameObject.Instantiate(prefab_transform.gameObject, filters_block_transform);
-                    search_bar.name = "EnhancedInventory_SearchBar";
-                    search_bar.AddComponent<SearchBarController>();
+                    GameObject search_bar = new GameObject("EnhancedInventory");
+                    search_bar.transform.SetParent(filters_block_transform, false);
+                    search_bar.name = "EnhancedInventory";
+                    search_bar.AddComponent<InventoryController>();
                 }
             }
         }
