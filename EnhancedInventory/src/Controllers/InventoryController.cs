@@ -37,7 +37,7 @@ namespace EnhancedInventory.Controllers
 
         private void Awake()
         {
-            m_filter_block = transform.Find(PathToFilterBlock());
+            m_filter_block = transform.Find(PathToFilterBlock(Type));
             m_search_bar = new SearchBar(m_filter_block);
 
             m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int _)
@@ -53,7 +53,7 @@ namespace EnhancedInventory.Controllers
             {
                 m_search_bar.InputField.onSubmit.AddListener(delegate (string _)
                 {
-                    transform.Find(PathToStashScroll()).GetComponent<Scrollbar>().value = 0.0f;
+                    transform.Find(PathToStashScroll(Type)).GetComponent<Scrollbar>().value = 0.0f;
                 });
             }
 
@@ -220,30 +220,6 @@ namespace EnhancedInventory.Controllers
             }
         }
 
-        private string PathToFilterBlock()
-        {
-            switch (Type)
-            {
-                case InventoryType.LootCollector: return "Filters/Filters";
-                case InventoryType.LootInventoryStash: return "Filters/PC_FilterBlock/Filters";
-            }
-
-            return "PC_FilterBlock/Filters";
-        }
-
-        private string PathToStashScroll()
-        {
-            switch (Type)
-            {
-                case InventoryType.InventoryStash: return "StashScrollView/Scrollbar Vertical";
-                case InventoryType.Vendor: return "VendorStashScrollView/Scrollbar Vertical";
-                case InventoryType.LootCollector: return "Collector/StashScrollView/Scrollbar Vertical";
-                case InventoryType.LootInventoryStash: return "Stash/StashScrollView/Scrollbar Vertical";
-            }
-
-            return null;
-        }
-
         private void ApplyFilter()
         {
             if (m_active_filter != null)
@@ -252,6 +228,36 @@ namespace EnhancedInventory.Controllers
                 m_active_filter.SetValueAndForceNotify((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
                 Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = null;
             }
+        }
+
+        public static string PathToFilterBlock(InventoryType type)
+        {
+            switch (type)
+            {
+                case InventoryType.LootCollector: return "Filters/Filters";
+                case InventoryType.LootInventoryStash: return "Filters/PC_FilterBlock/Filters";
+            }
+
+            return "PC_FilterBlock/Filters";
+        }
+
+        public static string PathToSorter(InventoryType type)
+        {
+            string filter = PathToFilterBlock(type);
+            return filter.Substring(0, filter.LastIndexOf('/'));
+        }
+
+        public static string PathToStashScroll(InventoryType type)
+        {
+            switch (type)
+            {
+                case InventoryType.InventoryStash: return "StashScrollView/Scrollbar Vertical";
+                case InventoryType.Vendor: return "VendorStashScrollView/Scrollbar Vertical";
+                case InventoryType.LootCollector: return "Collector/StashScrollView/Scrollbar Vertical";
+                case InventoryType.LootInventoryStash: return "Stash/StashScrollView/Scrollbar Vertical";
+            }
+
+            return null;
         }
     }
 }

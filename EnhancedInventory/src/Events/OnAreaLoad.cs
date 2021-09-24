@@ -78,45 +78,46 @@ namespace EnhancedInventory.Events
 
         private void SetupSortingStyle()
         {
-            foreach ((string path, _) in m_inventory_paths)
+            foreach ((string path, InventoryType type) in m_inventory_paths)
             {
-                Transform filters_block_transform = Game.Instance.UI.MainCanvas.transform.Find(path);
+                string viewport_path = $"{path}/{InventoryController.PathToSorter(type)}/Sorting/Dropdown/Template/Viewport";
+                Transform viewport = Game.Instance.UI.MainCanvas.transform.Find(viewport_path);
 
-                if (filters_block_transform != null)
-                {
-                    Transform content = filters_block_transform.parent.Find("Sorting/Dropdown/Template/Viewport/Content");
-                    Transform item = content.Find("Item");
+                // This happens if we're on a screen that we don't have access to or screens that have different formatting.
+                if (viewport == null) continue;
 
-                    VerticalLayoutGroup group = content.GetComponent<VerticalLayoutGroup>();
-                    TextMeshProUGUI item_label = item.Find("Item Label").GetComponent<TextMeshProUGUI>();
-                    RectTransform item_background = item.Find("Item Background").GetComponent<RectTransform>();
-                    RectTransform item_checkmark = item.Find("Item Checkmark").GetComponent<RectTransform>();
-                    RectTransform item_bottom_border = item.Find("BottomBorderImage").GetComponent<RectTransform>();
+                Transform content = viewport.Find("Content");
+                Transform item = content.Find("Item");
 
-                    group.spacing = 4;
-                    group.padding.top = 0;
-                    group.padding.bottom = 0;
+                VerticalLayoutGroup group = content.GetComponent<VerticalLayoutGroup>();
+                TextMeshProUGUI item_label = item.Find("Item Label").GetComponent<TextMeshProUGUI>();
+                RectTransform item_background = item.Find("Item Background").GetComponent<RectTransform>();
+                RectTransform item_checkmark = item.Find("Item Checkmark").GetComponent<RectTransform>();
+                RectTransform item_bottom_border = item.Find("BottomBorderImage").GetComponent<RectTransform>();
 
-                    item_label.fontSize = 16.0f;
-                    item_label.horizontalAlignment = HorizontalAlignmentOptions.Center;
+                group.spacing = 4;
+                group.padding.top = 0;
+                group.padding.bottom = 0;
 
-                    item_background.anchorMin = new Vector2(0.0f, 0.0f);
-                    item_background.anchorMax = new Vector2(1.0f, 1.0f);
-                    item_background.offsetMin = new Vector2(0.0f, 0.0f);
-                    item_background.offsetMax = new Vector2(0.0f, 0.0f);
+                item_label.fontSize = 16.0f;
+                item_label.horizontalAlignment = HorizontalAlignmentOptions.Center;
 
-                    item_checkmark.anchorMin = new Vector2(0.0f, 0.0f);
-                    item_checkmark.anchorMax = new Vector2(1.0f, 1.0f);
-                    item_checkmark.offsetMin = new Vector2(0.0f, 0.0f);
-                    item_checkmark.offsetMax = new Vector2(0.0f, 0.0f);
+                item_background.anchorMin = new Vector2(0.0f, 0.0f);
+                item_background.anchorMax = new Vector2(1.0f, 1.0f);
+                item_background.offsetMin = new Vector2(0.0f, 0.0f);
+                item_background.offsetMax = new Vector2(0.0f, 0.0f);
 
-                    item_bottom_border.anchorMin = new Vector2(0.0f, 0.0f);
-                    item_bottom_border.anchorMax = new Vector2(1.0f, 0.0f);
-                    item_bottom_border.offsetMin = new Vector2(0.0f, -2.0f);
-                    item_bottom_border.offsetMax = new Vector2(0.0f, 0.0f);
+                item_checkmark.anchorMin = new Vector2(0.0f, 0.0f);
+                item_checkmark.anchorMax = new Vector2(1.0f, 1.0f);
+                item_checkmark.offsetMin = new Vector2(0.0f, 0.0f);
+                item_checkmark.offsetMax = new Vector2(0.0f, 0.0f);
 
-                    GameObject.Destroy(content.parent.Find("TopBorderImage").gameObject);
-                }
+                item_bottom_border.anchorMin = new Vector2(0.0f, 0.0f);
+                item_bottom_border.anchorMax = new Vector2(1.0f, 0.0f);
+                item_bottom_border.offsetMin = new Vector2(0.0f, -2.0f);
+                item_bottom_border.offsetMax = new Vector2(0.0f, 0.0f);
+
+                GameObject.Destroy(viewport.Find("TopBorderImage").gameObject);
             }
         }
     }
