@@ -26,7 +26,6 @@ namespace EnhancedInventory
         private static Harmony m_harmony;
         private static OnAreaLoad m_area_load_handler;
 
-
         public static bool Load(UnityModManager.ModEntry modEntry)
         {
             Logger = modEntry.Logger;

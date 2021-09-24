@@ -14,8 +14,6 @@ using Kingmaker;
 using System.Linq;
 using System;
 using Kingmaker.UI.MVVM._PCView.Loot;
-using Owlcat.Runtime.UI.VirtualListSystem;
-using Kingmaker.UI.MVVM._VM.Loot;
 using System.Collections.Generic;
 
 namespace EnhancedInventory.Controllers

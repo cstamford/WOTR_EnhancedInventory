@@ -47,13 +47,9 @@ namespace EnhancedInventory.Events
             foreach (string path in m_inventory_paths)
             {
                 Transform filters_block_transform = Game.Instance.UI.MainCanvas.transform.Find(path);
-
                 if (filters_block_transform != null)
                 {
-                    GameObject search_bar = new GameObject("EnhancedInventory");
-                    search_bar.transform.SetParent(filters_block_transform, false);
-                    search_bar.name = "EnhancedInventory";
-                    search_bar.AddComponent<InventoryController>();
+                    filters_block_transform.gameObject.AddComponent<InventoryController>();
                 }
             }
         }

@@ -5,18 +5,14 @@ using Kingmaker;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.UI;
 using Kingmaker.UI.Common;
-using Kingmaker.UI.MVVM._PCView.CharGen.Phases.FeatureSelector;
 using Kingmaker.UI.MVVM._PCView.Loot;
 using Kingmaker.UI.MVVM._PCView.ServiceWindows.Inventory;
 using Kingmaker.UI.MVVM._PCView.Vendor;
 using Kingmaker.UnitLogic;
-using Owlcat.Runtime.UI.Controls.Button;
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UniRx;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace EnhancedInventory.Controllers
@@ -79,7 +75,7 @@ namespace EnhancedInventory.Controllers
             // Gather images for the dropdown...
 
             List<Image> images = new List<Image>();
-            GameObject switch_bar = transform.parent.Find("SwitchBar").gameObject;
+            GameObject switch_bar = transform.Find("SwitchBar").gameObject;
 
             foreach (Transform child in switch_bar.transform)
             {
@@ -137,7 +133,7 @@ namespace EnhancedInventory.Controllers
             {
                 SetupContextualEvents();
 
-                Transform switch_bar = transform.parent.Find("SwitchBar");
+                Transform switch_bar = transform.Find("SwitchBar");
 
                 if (switch_bar != null)
                 {
