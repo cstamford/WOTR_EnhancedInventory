@@ -112,7 +112,7 @@ namespace EnhancedInventory.Hooks
     }
 
     // Sorting - this hook handles custom sorting categories.
-    [HarmonyPatch(typeof(ItemsFilter), nameof(ItemsFilter.ItemSorter))]
+    [HarmonyPatch(typeof(ItemsFilter))]
     public static class ItemsFilter_ItemSorter
     {
         private static int CompareByWeightValue(ItemEntity a, ItemEntity b, ItemsFilter.FilterType filter)
@@ -123,6 +123,32 @@ namespace EnhancedInventory.Hooks
         }
 
         [HarmonyPrefix]
+        [HarmonyPatch(nameof(ItemsFilter.CompareByTypeAndName))]
+        private static bool CompareByTypeAndName(ItemEntity a, ItemEntity b, ItemsFilter.FilterType filter, ref int __result)
+        {
+            // First by main type
+            int a_b_comparison = a.Blueprint.ItemType.CompareTo(b.Blueprint.ItemType);
+            if (a_b_comparison != 0)
+            {
+                __result = a_b_comparison;
+                return false;
+            }
+
+            // Then by subtype
+            a_b_comparison = string.Compare(a.Blueprint.SubtypeName, b.Blueprint.SubtypeName, StringComparison.OrdinalIgnoreCase);
+            if (a_b_comparison != 0)
+            {
+                __result = a_b_comparison;
+                return false;
+            }
+
+            // Finally by name
+            __result = string.Compare(a.Name, b.Name, StringComparison.OrdinalIgnoreCase);
+            return false;
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ItemsFilter.ItemSorter))]
         public static bool Prefix(ItemsFilter.SorterType type, List<ItemEntity> items, ItemsFilter.FilterType filter, ref List<ItemEntity> __result)
         {
             ExpandedSorterType expanded_type = (ExpandedSorterType)type;
