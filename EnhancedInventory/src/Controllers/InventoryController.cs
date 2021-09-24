@@ -159,6 +159,11 @@ namespace EnhancedInventory.Controllers
                 {
                     m_search_bar.Dropdown.value = Main.FilterMapper.From((int)ItemsFilter.FilterType.NoFilter);
                 }
+
+                if (Main.Settings.SearchBarFocusWhenOpeningInv)
+                {
+                    m_search_bar.FocusSearchBar();
+                }
             }
         }
 

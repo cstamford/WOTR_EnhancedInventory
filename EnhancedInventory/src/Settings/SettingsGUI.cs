@@ -63,6 +63,10 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            Main.Settings.SearchBarFocusWhenOpeningInv = GUILayout.Toggle(Main.Settings.SearchBarFocusWhenOpeningInv, " Give the search bar focus when opening the inventory screen");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             Main.Settings.SearchBarEnableCategoryButtons = GUILayout.Toggle(Main.Settings.SearchBarEnableCategoryButtons, " EXPERIMENTAL: Enable the old category buttons in addition to the search bar");
             GUILayout.EndHorizontal();
 

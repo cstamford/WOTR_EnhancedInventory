@@ -67,8 +67,9 @@ namespace EnhancedInventory.Settings
         public bool EnableHighlightableLoot = true;
         public bool EnableVisualOverhaulSorting = true;
 
-        public bool SearchBarEnableCategoryButtons = false;
         public bool SearchBarResetFilterWhenOpeningInv = false;
+        public bool SearchBarFocusWhenOpeningInv = true;
+        public bool SearchBarEnableCategoryButtons = false;
 
         public SearchBarOptions SearchBarOptions =
             SearchBarOptions.ItemName |

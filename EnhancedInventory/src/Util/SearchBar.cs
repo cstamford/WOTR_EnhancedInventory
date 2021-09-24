@@ -57,6 +57,11 @@ namespace EnhancedInventory.Util
             rect.offsetMax = new Vector2(0.0f, 2.0f);
         }
 
+        public void FocusSearchBar()
+        {
+            OnInputClick();
+        }
+
         private void OnDropdownButton()
         {
             Dropdown.Show();
