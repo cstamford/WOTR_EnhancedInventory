@@ -71,7 +71,7 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SearchBarEnableCategoryButtons = GUILayout.Toggle(Main.Settings.SearchBarEnableCategoryButtons, " EXPERIMENTAL: Enable the old category buttons in addition to the search bar");
+            Main.Settings.SearchBarEnableCategoryButtons = GUILayout.Toggle(Main.Settings.SearchBarEnableCategoryButtons, " EXPERIMENTAL: Enable the old category filter buttons in addition to the search bar");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(4);
