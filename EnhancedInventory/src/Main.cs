@@ -41,7 +41,7 @@ namespace EnhancedInventory
             modEntry.OnSaveGUI = OnSaveGUI;
 
 #if DEBUG
-            modEntry.OnUnload = Unload;
+            modEntry.OnUnload = OnUnload;
 #endif
 
             m_harmony = new Harmony(modEntry.Info.Id);
@@ -53,7 +53,19 @@ namespace EnhancedInventory
             return true;
         }
 
-        public static bool Unload(UnityModManager.ModEntry _)
+        private static void OnGUI(UnityModManager.ModEntry _)
+        {
+            GUILayout.Space(4);
+            SettingsGUI.Draw();
+            GUILayout.Space(4);
+        }
+
+        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
+        {
+            Settings.Save(modEntry);
+        }
+
+        private static bool OnUnload(UnityModManager.ModEntry _)
         {
             m_harmony.UnpatchAll();
             EventBus.Unsubscribe(m_area_load_handler);
@@ -80,18 +92,6 @@ namespace EnhancedInventory
                     SorterMapper.Add(SorterCategoryMap[flag].Item1);
                 }
             }
-        }
-
-        private static void OnGUI(UnityModManager.ModEntry _)
-        {
-            GUILayout.Space(4);
-            SettingsGUI.Draw();
-            GUILayout.Space(4);
-        }
-
-        private static void OnSaveGUI(UnityModManager.ModEntry modEntry)
-        {
-            Settings.Save(modEntry);
         }
 
         public static readonly Dictionary<FilterCategories, Tuple<int, string>> FilterCategoryMap =

@@ -67,6 +67,10 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            Main.Settings.SearchBarScrollResetOnSubmit = GUILayout.Toggle(Main.Settings.SearchBarScrollResetOnSubmit, " When pressing enter to complete a search, the scroll bar will reset to the top of the stash");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             Main.Settings.SearchBarEnableCategoryButtons = GUILayout.Toggle(Main.Settings.SearchBarEnableCategoryButtons, " EXPERIMENTAL: Enable the old category buttons in addition to the search bar");
             GUILayout.EndHorizontal();
 

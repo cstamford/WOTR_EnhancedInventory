@@ -69,6 +69,7 @@ namespace EnhancedInventory.Settings
 
         public bool SearchBarResetFilterWhenOpeningInv = false;
         public bool SearchBarFocusWhenOpeningInv = true;
+        public bool SearchBarScrollResetOnSubmit = true;
         public bool SearchBarEnableCategoryButtons = false;
 
         public SearchBarOptions SearchBarOptions =

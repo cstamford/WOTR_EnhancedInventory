@@ -17,8 +17,19 @@ using UnityEngine.UI;
 
 namespace EnhancedInventory.Controllers
 {
+    public enum InventoryType
+    {
+        InventoryStash,
+        Vendor,
+        LootCollector,
+        LootInventoryStash
+    }
+
     public class InventoryController : MonoBehaviour
     {
+        public InventoryType Type;
+
+        private Transform m_filter_block;
         private SearchBar m_search_bar;
         private Image[] m_search_icons;
         private ReactiveProperty<ItemsFilter.FilterType> m_active_filter;
@@ -26,7 +37,8 @@ namespace EnhancedInventory.Controllers
 
         private void Awake()
         {
-            m_search_bar = new SearchBar(transform);
+            m_filter_block = transform.Find(PathToFilterBlock());
+            m_search_bar = new SearchBar(m_filter_block);
 
             m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int _)
             {
@@ -35,7 +47,16 @@ namespace EnhancedInventory.Controllers
                 ApplyFilter();
             });
 
-            m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) {  ApplyFilter();  });
+            m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { ApplyFilter(); });
+
+            if (Main.Settings.SearchBarScrollResetOnSubmit)
+            {
+                m_search_bar.InputField.onSubmit.AddListener(delegate (string _)
+                {
+                    transform.Find(PathToStashScroll()).GetComponent<Scrollbar>().value = 0.0f;
+                });
+            }
+
             m_char_selection_changed_cb = Game.Instance.SelectionCharacter.SelectedUnit.Subscribe(delegate (UnitDescriptor _) { ApplyFilter(); });
 
             // Add options to the dropdown...
@@ -75,7 +96,7 @@ namespace EnhancedInventory.Controllers
             // Gather images for the dropdown...
 
             List<Image> images = new List<Image>();
-            GameObject switch_bar = transform.Find("SwitchBar").gameObject;
+            GameObject switch_bar = m_filter_block.Find("SwitchBar").gameObject;
 
             foreach (Transform child in switch_bar.transform)
             {
@@ -131,9 +152,38 @@ namespace EnhancedInventory.Controllers
         {
             if (m_active_filter == null)
             {
-                SetupContextualEvents();
+                switch (Type)
+                {
+                    case InventoryType.InventoryStash:
+                        InventoryStashPCView stash_pc_view = GetComponentInParent<InventoryStashPCView>();
+                        m_active_filter = stash_pc_view.ViewModel.ItemsFilter.CurrentFilter;
+                        stash_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
+                        stash_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
+                        break;
 
-                Transform switch_bar = transform.Find("SwitchBar");
+                    case InventoryType.Vendor:
+                        VendorPCView vendor_pc_view = GetComponentInParent<VendorPCView>();
+                        m_active_filter = vendor_pc_view.ViewModel.VendorItemsFilter.CurrentFilter;
+                        vendor_pc_view.ViewModel.VendorSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
+                        vendor_pc_view.ViewModel.VendorItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
+                        break;
+
+                    case InventoryType.LootCollector:
+                        LootCollectorPCView collector_pc_view = GetComponentInParent<LootCollectorPCView>();
+                        m_active_filter = collector_pc_view.ViewModel.ItemsFilter.CurrentFilter;
+                        collector_pc_view.ViewModel.CollectionChangedCommand.Subscribe(delegate (Unit _) { ApplyFilter(); });
+                        collector_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
+                        break;
+
+                    case InventoryType.LootInventoryStash:
+                        LootInventoryStashPCView inventory_pc_view = GetComponentInParent<LootInventoryStashPCView>();
+                        m_active_filter = inventory_pc_view.ViewModel.ItemsFilter.CurrentFilter;
+                        inventory_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
+                        inventory_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
+                        break;
+                }
+
+                Transform switch_bar = m_filter_block.Find("SwitchBar");
 
                 if (switch_bar != null)
                 {
@@ -155,50 +205,43 @@ namespace EnhancedInventory.Controllers
                     }
                 }
 
-                if (Main.Settings.SearchBarResetFilterWhenOpeningInv)
+                if (Type == InventoryType.InventoryStash || Type == InventoryType.LootInventoryStash)
                 {
-                    m_search_bar.Dropdown.value = Main.FilterMapper.From((int)ItemsFilter.FilterType.NoFilter);
-                }
+                    if (Main.Settings.SearchBarResetFilterWhenOpeningInv)
+                    {
+                        m_search_bar.Dropdown.value = Main.FilterMapper.From((int)ItemsFilter.FilterType.NoFilter);
+                    }
 
-                if (Main.Settings.SearchBarFocusWhenOpeningInv)
-                {
-                    m_search_bar.FocusSearchBar();
+                    if (Main.Settings.SearchBarFocusWhenOpeningInv)
+                    {
+                        m_search_bar.FocusSearchBar();
+                    }
                 }
             }
         }
 
-        private void SetupContextualEvents()
+        private string PathToFilterBlock()
         {
-            string path = transform.GetPath();
+            switch (Type)
+            {
+                case InventoryType.LootCollector: return "Filters/Filters";
+                case InventoryType.LootInventoryStash: return "Filters/PC_FilterBlock/Filters";
+            }
 
-            if (path.Contains("LootPCView/Window/Inventory")) // pc side - stash/loot
+            return "PC_FilterBlock/Filters";
+        }
+
+        private string PathToStashScroll()
+        {
+            switch (Type)
             {
-                LootInventoryStashPCView inventory_pc_view = GetComponentInParent<LootInventoryStashPCView>();
-                m_active_filter = inventory_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                inventory_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
-                inventory_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
+                case InventoryType.InventoryStash: return "StashScrollView/Scrollbar Vertical";
+                case InventoryType.Vendor: return "VendorStashScrollView/Scrollbar Vertical";
+                case InventoryType.LootCollector: return "Collector/StashScrollView/Scrollbar Vertical";
+                case InventoryType.LootInventoryStash: return "Stash/StashScrollView/Scrollbar Vertical";
             }
-            else if (path.Contains("LootPCView/Window/Collector")) // loot side - stash/loot
-            {
-                LootCollectorPCView collector_pc_view = GetComponentInParent<LootCollectorPCView>();
-                m_active_filter = collector_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                collector_pc_view.ViewModel.CollectionChangedCommand.Subscribe(delegate (Unit _) { ApplyFilter(); });
-                collector_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-            }
-            else if (path.Contains("VendorPCView/MainContent/VendorBlock")) // vendor - vendor side
-            {
-                VendorPCView vendor_pc_view = GetComponentInParent<VendorPCView>();
-                m_active_filter = vendor_pc_view.ViewModel.VendorItemsFilter.CurrentFilter;
-                vendor_pc_view.ViewModel.VendorSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
-                vendor_pc_view.ViewModel.VendorItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-            }
-            else
-            {
-                InventoryStashPCView stash_pc_view = GetComponentInParent<InventoryStashPCView>();
-                m_active_filter = stash_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                stash_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
-                stash_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-            }
+
+            return null;
         }
 
         private void ApplyFilter()

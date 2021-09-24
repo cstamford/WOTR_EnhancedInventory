@@ -1,6 +1,7 @@
 ﻿using EnhancedInventory.Controllers;
 using Kingmaker;
 using Kingmaker.PubSubSystem;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -32,24 +33,36 @@ namespace EnhancedInventory.Events
         public void OnAreaBeginUnloading()
         { }
 
-        private readonly string[] m_inventory_paths = new string[]
+        private readonly Tuple<string, InventoryType>[] m_inventory_paths = new Tuple<string, InventoryType>[]
         {
-            "ServiceWindowsPCView/InventoryView/Inventory/Stash/StashContainer/PC_FilterBlock/Filters", // in game inventory
-            "VendorPCView/MainContent/PlayerStash/PC_FilterBlock/Filters", // vendor - PC side
-            "VendorPCView/MainContent/VendorBlock/PC_FilterBlock/Filters", // vendor - vendor side
-            "ServiceWindowsConfig/InventoryView/Inventory/Stash/StashContainer/PC_FilterBlock/Filters", // world map inventory
-            "LootPCView/Window/Inventory/Filters/PC_FilterBlock/Filters", // stash - PC side
-            "LootPCView/Window/Collector/Filters/Filters" // stash - loot side
+            // Regular, in-game inventory.
+            new Tuple<string, InventoryType>("ServiceWindowsPCView/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
+
+            // World map inventory.
+            new Tuple<string, InventoryType>("ServiceWindowsConfig/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
+
+            // Vendor screen: PC inventory view.
+            new Tuple<string, InventoryType>("VendorPCView/MainContent/PlayerStash", InventoryType.InventoryStash),
+
+            // Vendor screen: Vendor goods view.
+            new Tuple<string, InventoryType>("VendorPCView/MainContent/VendorBlock", InventoryType.Vendor),
+
+            // Shared stash: PC inventory view.
+            new Tuple<string, InventoryType>("LootPCView/Window/Inventory", InventoryType.LootInventoryStash),
+
+            // Shared stash: Stash items view.
+            new Tuple<string, InventoryType>("LootPCView/Window/Collector", InventoryType.LootCollector),
         };
 
         private void LoadSearchBar()
         {
-            foreach (string path in m_inventory_paths)
+            foreach ((string path, InventoryType type) in m_inventory_paths)
             {
                 Transform filters_block_transform = Game.Instance.UI.MainCanvas.transform.Find(path);
                 if (filters_block_transform != null)
                 {
-                    filters_block_transform.gameObject.AddComponent<InventoryController>();
+                    InventoryController controller = filters_block_transform.gameObject.AddComponent<InventoryController>();
+                    controller.Type = type;
                 }
             }
         }
@@ -65,7 +78,7 @@ namespace EnhancedInventory.Events
 
         private void SetupSortingStyle()
         {
-            foreach (string path in m_inventory_paths)
+            foreach ((string path, _) in m_inventory_paths)
             {
                 Transform filters_block_transform = Game.Instance.UI.MainCanvas.transform.Find(path);
 
