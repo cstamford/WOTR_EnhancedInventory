@@ -79,7 +79,7 @@ namespace EnhancedInventory
 
             foreach (FilterCategories flag in EnumHelper.ValidFilterCategories)
             {
-                if (Settings.FilterOptions.HasFlag(flag))
+                if (Settings.FilterOptions.HasFlag(flag) || !Settings.EnableSearchBar)
                 {
                     FilterMapper.Add(FilterCategoryMap[flag].Item1);
                 }
