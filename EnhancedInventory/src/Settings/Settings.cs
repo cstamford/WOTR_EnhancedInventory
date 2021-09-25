@@ -5,22 +5,24 @@ using UnityModManagerNet;
 namespace EnhancedInventory.Settings
 {
     [Flags]
-    public enum SearchBarOptions
+    public enum SearchCriteria
     {
-        None            = 0,
         ItemName        = 1 << 0,
         ItemType        = 1 << 1,
         ItemSubtype     = 1 << 2,
         ItemDescription = 1 << 3,
+
+        Default = ItemName | ItemType | ItemSubtype
     }
 
     [Flags]
     public enum HighlightLootableOptions
     {
-        None                = 0,
         UnlearnedScrolls    = 1 << 0,
         UnlearnedRecipes    = 1 << 1,
-        UnreadDocuments     = 1 << 2
+        UnreadDocuments     = 1 << 2,
+
+        Default = UnlearnedScrolls | UnlearnedRecipes | UnreadDocuments
     }
 
     [Flags]
@@ -39,6 +41,19 @@ namespace EnhancedInventory.Settings
         UnlearnedRecipes    = 1 << 9,
         UnreadDocuments     = 1 << 10,
         UsableWithoutUMD    = 1 << 11,
+
+        Default = Weapon |
+            Armor |
+            Accessories |
+            Ingredients |
+            Usable |
+            Notable |
+            NonUsable |
+            QuickslotUtils |
+            UnlearnedScrolls |
+            UnlearnedRecipes |
+            UnreadDocuments |
+            UsableWithoutUMD
     }
 
     [Flags]
@@ -56,7 +71,13 @@ namespace EnhancedInventory.Settings
         WeightUp        = 1 << 8,
         WeightDown      = 1 << 9,
         WeightValueUp   = 1 << 10,
-        WeightValueDown = 1 << 11
+        WeightValueDown = 1 << 11,
+
+        Default = TypeUp |
+            PriceDown |
+            DateDown |
+            WeightDown |
+            WeightValueUp
     }
 
     // TODO BEFORE RELEASE: Add filter categories
@@ -72,39 +93,13 @@ namespace EnhancedInventory.Settings
         public bool SearchBarScrollResetOnSubmit = true;
         public bool SearchBarEnableCategoryButtons = false;
 
-        public SearchBarOptions SearchBarOptions =
-            SearchBarOptions.ItemName |
-            SearchBarOptions.ItemType |
-            SearchBarOptions.ItemSubtype;
-
-        public HighlightLootableOptions HighlightLootOptions =
-            HighlightLootableOptions.UnlearnedScrolls |
-            HighlightLootableOptions.UnlearnedRecipes |
-            HighlightLootableOptions.UnreadDocuments;
+        public SearchCriteria SearchCriteria = SearchCriteria.Default;
+        public FilterCategories FilterOptions = FilterCategories.Default;
+        public SorterCategories SorterOptions = SorterCategories.Default;
+        public HighlightLootableOptions HighlightLootOptions = HighlightLootableOptions.Default;
 
         public Color32 HighlightLootBorder = new Color32(255, 215, 0, 255);
         public Color32 HighlightLootBackground = new Color32(255, 215, 0, 255);
-
-        public FilterCategories FilterOptions =
-            FilterCategories.Weapon |
-            FilterCategories.Armor |
-            FilterCategories.Accessories |
-            FilterCategories.Ingredients |
-            FilterCategories.Usable |
-            FilterCategories.Notable |
-            FilterCategories.NonUsable |
-            FilterCategories.QuickslotUtils |
-            FilterCategories.UnlearnedScrolls |
-            FilterCategories.UnlearnedRecipes |
-            FilterCategories.UnreadDocuments |
-            FilterCategories.UsableWithoutUMD;
-
-        public SorterCategories SorterOptions =
-            SorterCategories.TypeUp |
-            SorterCategories.PriceDown |
-            SorterCategories.DateDown |
-            SorterCategories.WeightDown |
-            SorterCategories.WeightValueUp;
 
         public override void Save(UnityModManager.ModEntry modEntry)
         {

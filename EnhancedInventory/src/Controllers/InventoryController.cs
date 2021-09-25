@@ -63,7 +63,7 @@ namespace EnhancedInventory.Controllers
 
             List<string> options = new List<string>();
 
-            foreach (FilterCategories flag in Enum.GetValues(typeof(FilterCategories)))
+            foreach (FilterCategories flag in EnumHelper.ValidFilterCategories)
             {
                 if (Main.Settings.FilterOptions.HasFlag(flag))
                 {
@@ -188,7 +188,7 @@ namespace EnhancedInventory.Controllers
                 if (switch_bar != null)
                 {
                     // Add listeners to each button; if the button changes, we change the dropdown to match.
-                    foreach (ItemsFilter.FilterType filter in Enum.GetValues(typeof(ItemsFilter.FilterType)))
+                    foreach (ItemsFilter.FilterType filter in EnumHelper.ValidFilterCategories)
                     {
                         int idx = (int)filter;
                         int mapped_idx = Main.FilterMapper.From(idx);

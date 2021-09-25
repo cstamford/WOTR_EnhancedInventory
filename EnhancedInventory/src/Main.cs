@@ -77,7 +77,7 @@ namespace EnhancedInventory
             FilterMapper.Clear();
             SorterMapper.Clear();
 
-            foreach (FilterCategories flag in Enum.GetValues(typeof(FilterCategories)))
+            foreach (FilterCategories flag in EnumHelper.ValidFilterCategories)
             {
                 if (Settings.FilterOptions.HasFlag(flag))
                 {
@@ -85,7 +85,7 @@ namespace EnhancedInventory
                 }
             }
 
-            foreach (SorterCategories flag in Enum.GetValues(typeof(SorterCategories)))
+            foreach (SorterCategories flag in EnumHelper.ValidSorterCategories)
             {
                 if (Settings.SorterOptions.HasFlag(flag))
                 {

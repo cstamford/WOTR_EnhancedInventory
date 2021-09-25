@@ -1,4 +1,5 @@
 using EnhancedInventory.Settings;
+using EnhancedInventory.Util;
 using HarmonyLib;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.UI.Common;
@@ -58,7 +59,7 @@ namespace EnhancedInventory.Hooks
 
             List<string> options = new List<string>();
 
-            foreach (SorterCategories flag in Enum.GetValues(typeof(SorterCategories)))
+            foreach (SorterCategories flag in EnumHelper.ValidSorterCategories)
             {
                 if (Main.Settings.SorterOptions.HasFlag(flag))
                 {

@@ -1,4 +1,5 @@
 ﻿using EnhancedInventory.Settings;
+using EnhancedInventory.Util;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -78,29 +79,54 @@ namespace EnhancedInventory
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(8);
+            bool draw_criteria = FeatureButton("Search Criteria", false);
+            GUILayout.EndHorizontal();
+
+            if (draw_criteria)
+            {
+                SearchCriteria new_options = default;
+
+                foreach (SearchCriteria flag in EnumHelper.ValidSearchCriteria)
+                {
+                    GUILayout.BeginHorizontal();
+                    if (GUILayout.Toggle(Main.Settings.SearchCriteria.HasFlag(flag), $" {flag}"))
+                    {
+                        new_options |= flag;
+                    }
+                    GUILayout.EndHorizontal();
+                }
+
+                Main.Settings.SearchCriteria = new_options;
+
+                GUILayout.Space(4);
+            }
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(8);
             bool draw_cats = FeatureButton("Enabled Filter Categories", false);
             GUILayout.EndHorizontal();
 
-            if (!draw_cats) return;
-
-            FilterCategories new_options = FilterCategories.NoFilter;
-
-            foreach (FilterCategories flag in Enum.GetValues(typeof(FilterCategories)))
+            if (draw_cats)
             {
-                if (flag == FilterCategories.NoFilter) continue;
+                FilterCategories new_options = FilterCategories.NoFilter;
 
-                GUILayout.BeginHorizontal();
-                GUILayout.Space(12);
-
-                if (GUILayout.Toggle(Main.Settings.FilterOptions.HasFlag(flag), $" {Main.FilterCategoryMap[flag].Item2 ?? flag.ToString()}"))
+                foreach (FilterCategories flag in EnumHelper.ValidFilterCategories)
                 {
-                    new_options |= flag;
+                    if (flag == FilterCategories.NoFilter) continue;
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(12);
+
+                    if (GUILayout.Toggle(Main.Settings.FilterOptions.HasFlag(flag), $" {Main.FilterCategoryMap[flag].Item2 ?? flag.ToString()}"))
+                    {
+                        new_options |= flag;
+                    }
+
+                    GUILayout.EndHorizontal();
                 }
 
-                GUILayout.EndHorizontal();
+                Main.Settings.FilterOptions = new_options;
             }
-
-            Main.Settings.FilterOptions = new_options;
         }
 
         private static void DrawHighlightableLootOptions()
@@ -179,12 +205,10 @@ namespace EnhancedInventory
 
             if (!draw_highlight_cats) return;
 
-            HighlightLootableOptions new_options = HighlightLootableOptions.None;
+            HighlightLootableOptions new_options = default;
 
-            foreach (HighlightLootableOptions flag in Enum.GetValues(typeof(HighlightLootableOptions)))
+            foreach (HighlightLootableOptions flag in EnumHelper.ValidHighlightLootableOptions)
             {
-                if (flag == HighlightLootableOptions.None) continue;
-
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(12);
 
@@ -209,9 +233,9 @@ namespace EnhancedInventory
 
             SorterCategories new_options = SorterCategories.NotSorted;
 
-            foreach (SorterCategories flag in Enum.GetValues(typeof(SorterCategories)))
+            foreach (SorterCategories flag in EnumHelper.ValidSorterCategories)
             {
-                if (flag == SorterCategories.NotSorted) continue;
+                if (flag == SorterCategories.NotSorted || flag == SorterCategories.Default) continue;
 
                 GUILayout.BeginHorizontal();
 
