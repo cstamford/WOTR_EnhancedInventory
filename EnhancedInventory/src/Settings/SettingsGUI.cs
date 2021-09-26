@@ -151,7 +151,15 @@ namespace EnhancedInventory
             if (!draw_search_bar) return;
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SpellbookSearchBarFocusWhenOpening = GUILayout.Toggle(Main.Settings.SpellbookSearchBarFocusWhenOpening, " Give the search bar focus when opening the spelbook screen");
+            Main.Settings.SpellbookSearchBarFocusWhenOpening = GUILayout.Toggle(Main.Settings.SpellbookSearchBarFocusWhenOpening, " Give the search bar focus when opening the spellbook screen");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookShowAllSpellsByDefault = GUILayout.Toggle(Main.Settings.SpellbookShowAllSpellsByDefault, " Show all spells by default");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookShowMetamagicByDefault = GUILayout.Toggle(Main.Settings.SpellbookShowMetamagicByDefault, " Show metamagic by default");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(4);

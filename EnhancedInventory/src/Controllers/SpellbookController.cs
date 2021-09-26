@@ -86,7 +86,7 @@ namespace EnhancedInventory.Controllers
             metamagic_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show metamagic";
             m_metamagic_checkbox = metamagic_button.GetComponent<ToggleWorkaround>();
             m_metamagic_checkbox.onValueChanged.AddListener(delegate (bool _) { m_deferred_update = true; });
-            m_metamagic_checkbox.isOn = true;
+            m_metamagic_checkbox.isOn = Main.Settings.SpellbookShowMetamagicByDefault;
 
             // Move the levels display (which is still used for displaying memorized spells).
             // Also hide the metamagic option.
@@ -130,8 +130,9 @@ namespace EnhancedInventory.Controllers
                     all.transform.Find("Active").gameObject.SetActive(state);
                 });
 
-                m_all_button.isOn = true;
+                m_all_button.isOn = Main.Settings.SpellbookShowAllSpellsByDefault;
 
+                Destroy(all.transform.Find("NotAccessible").gameObject);
                 Destroy(all.GetComponent<OwlcatMultiButton>());
                 Destroy(all.GetComponent<SpellbookLevelSwitcherEntityPCView>());
 
@@ -182,7 +183,7 @@ namespace EnhancedInventory.Controllers
                 WidgetListMVVM widgets = transform.Find("MainContainer/KnownSpells").GetComponent<WidgetListMVVM>();
                 widgets.Clear();
 
-                if (m_spellbook.Value != null)
+                if (m_spellbook.Value != null && m_spellbook_level.Value != null)
                 {
                     SpellbookFilter filter = (SpellbookFilter)m_search_bar.Dropdown.value;
                     List<AbilityDataVM> spells_as_widget = new List<AbilityDataVM>();
@@ -250,19 +251,22 @@ namespace EnhancedInventory.Controllers
                         .OrderBy(i => i.SpellLevel).ThenBy(i => i.DisplayName).ToArray(),
                         new List<IWidgetView> { m_known_spell_prefab });
 
-                    foreach (SpellbookKnownSpellPCView spell in transform
-                        .Find("MainContainer/KnownSpells/StandardScrollView/Viewport/Content")
-                        .GetComponentsInChildren<SpellbookKnownSpellPCView>())
+                    if (m_all_button.isOn)
                     {
-                        // Event per slot in the prefab to change the selected option.
-                        m_handlers.Add(spell.m_Button.OnLeftClickAsObservable().Subscribe(delegate (Unit _)
+                        foreach (SpellbookKnownSpellPCView spell in transform
+                            .Find("MainContainer/KnownSpells/StandardScrollView/Viewport/Content")
+                            .GetComponentsInChildren<SpellbookKnownSpellPCView>())
                         {
-                            SelectMemorisationLevel(spell.ViewModel.SpellLevel);
-                        }));
+                            // Event per slot in the prefab to change the selected option.
+                            m_handlers.Add(spell.m_Button.OnLeftClickAsObservable().Subscribe(delegate (Unit _)
+                            {
+                                SelectMemorisationLevel(spell.ViewModel.SpellLevel);
+                            }));
+                        }
                     }
-
-                    m_deferred_update = false;
                 }
+
+                m_deferred_update = false;
             }
         }
 
