@@ -35,21 +35,24 @@ namespace EnhancedInventory.Controllers
         private ReactiveProperty<ItemsFilter.FilterType> m_active_filter;
         private IDisposable m_char_selection_changed_cb;
 
+        private bool m_apply_handlers = true;
+        private bool m_deferred_update = false;
+
         private void Awake()
         {
             m_filter_block = transform.Find(PathToFilterBlock(Type));
-            m_search_bar = new SearchBar(m_filter_block);
+            m_search_bar = new SearchBar(m_filter_block, "Enter item name...");
 
             m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int _)
             {
                 m_search_bar.DropdownIconObject.GetComponent<Image>().sprite = m_search_icons[m_search_bar.Dropdown.value]?.sprite;
                 m_search_bar.DropdownIconObject.gameObject.SetActive(m_search_bar.DropdownIconObject.GetComponent<Image>().sprite != null);
-                ApplyFilter();
+                m_deferred_update = true;
             });
 
-            m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { ApplyFilter(); });
+            m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { m_deferred_update = true; });
 
-            if (Main.Settings.SearchBarScrollResetOnSubmit)
+            if (Main.Settings.InventorySearchBarScrollResetOnSubmit)
             {
                 m_search_bar.InputField.onSubmit.AddListener(delegate (string _)
                 {
@@ -57,7 +60,7 @@ namespace EnhancedInventory.Controllers
                 });
             }
 
-            m_char_selection_changed_cb = Game.Instance.SelectionCharacter.SelectedUnit.Subscribe(delegate (UnitDescriptor _) { ApplyFilter(); });
+            m_char_selection_changed_cb = Game.Instance.SelectionCharacter.SelectedUnit.Subscribe(delegate (UnitDescriptor _) { m_deferred_update = true; });
 
             // Add options to the dropdown...
 
@@ -114,7 +117,7 @@ namespace EnhancedInventory.Controllers
 
             RectTransform search_transform = m_search_bar.GameObject.GetComponent<RectTransform>();
 
-            if (Main.Settings.SearchBarEnableCategoryButtons)
+            if (Main.Settings.InventorySearchBarEnableCategoryButtons)
             {
                 search_transform.localScale = new Vector3(0.6f, 0.6f, 1.0f);
                 search_transform.localPosition = new Vector3(0.0f, -8.0f, 0.0f);
@@ -140,7 +143,7 @@ namespace EnhancedInventory.Controllers
 
         private void OnEnable()
         {
-            m_active_filter = null;
+            m_apply_handlers = true;
         }
 
         private void OnDestroy()
@@ -150,37 +153,39 @@ namespace EnhancedInventory.Controllers
 
         private void Update()
         {
-            if (m_active_filter == null)
+            if (m_apply_handlers)
             {
-                switch (Type)
+                if (Type == InventoryType.InventoryStash)
                 {
-                    case InventoryType.InventoryStash:
-                        InventoryStashPCView stash_pc_view = GetComponentInParent<InventoryStashPCView>();
-                        m_active_filter = stash_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                        stash_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
-                        stash_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-                        break;
+                    InventoryStashPCView stash_pc_view = GetComponentInParent<InventoryStashPCView>();
+                    m_active_filter = stash_pc_view.ViewModel.ItemsFilter.CurrentFilter;
+                    stash_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; });
+                    stash_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                }
+                else if (Type == InventoryType.Vendor)
+                {
+                    VendorPCView vendor_pc_view = GetComponentInParent<VendorPCView>();
+                    m_active_filter = vendor_pc_view.ViewModel.VendorItemsFilter.CurrentFilter;
+                    vendor_pc_view.ViewModel.VendorSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; });
+                    vendor_pc_view.ViewModel.VendorItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                }
+                else if (Type == InventoryType.LootCollector)
+                {
+                    LootCollectorPCView collector_pc_view = GetComponent<LootCollectorPCView>();
+                    m_active_filter = collector_pc_view.ViewModel.ItemsFilter?.CurrentFilter;
+                    collector_pc_view.ViewModel.CollectionChangedCommand.Subscribe(delegate (Unit _) { m_deferred_update = true; });
 
-                    case InventoryType.Vendor:
-                        VendorPCView vendor_pc_view = GetComponentInParent<VendorPCView>();
-                        m_active_filter = vendor_pc_view.ViewModel.VendorItemsFilter.CurrentFilter;
-                        vendor_pc_view.ViewModel.VendorSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
-                        vendor_pc_view.ViewModel.VendorItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-                        break;
-
-                    case InventoryType.LootCollector:
-                        LootCollectorPCView collector_pc_view = GetComponentInParent<LootCollectorPCView>();
-                        m_active_filter = collector_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                        collector_pc_view.ViewModel.CollectionChangedCommand.Subscribe(delegate (Unit _) { ApplyFilter(); });
-                        collector_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-                        break;
-
-                    case InventoryType.LootInventoryStash:
-                        LootInventoryStashPCView inventory_pc_view = GetComponentInParent<LootInventoryStashPCView>();
-                        m_active_filter = inventory_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                        inventory_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { ApplyFilter(); });
-                        inventory_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { ApplyFilter(); });
-                        break;
+                    if (m_active_filter != null) // can be null if not on stash view
+                    {
+                        collector_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                    }
+                }
+                else if (Type == InventoryType.LootInventoryStash)
+                {
+                    LootInventoryStashPCView inventory_pc_view = GetComponentInParent<LootInventoryStashPCView>();
+                    m_active_filter = inventory_pc_view.ViewModel.ItemsFilter.CurrentFilter;
+                    inventory_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; });
+                    inventory_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
                 }
 
                 Transform switch_bar = m_filter_block.Find("SwitchBar");
@@ -207,26 +212,30 @@ namespace EnhancedInventory.Controllers
 
                 if (Type == InventoryType.InventoryStash || Type == InventoryType.LootInventoryStash)
                 {
-                    if (Main.Settings.SearchBarResetFilterWhenOpeningInv)
+                    if (Main.Settings.InventorySearchBarResetFilterWhenOpening)
                     {
                         m_search_bar.Dropdown.value = Main.FilterMapper.From((int)ItemsFilter.FilterType.NoFilter);
                     }
 
-                    if (Main.Settings.SearchBarFocusWhenOpeningInv)
+                    if (Main.Settings.InventorySearchBarFocusWhenOpening)
                     {
                         m_search_bar.FocusSearchBar();
                     }
                 }
-            }
-        }
 
-        private void ApplyFilter()
-        {
-            if (m_active_filter != null)
+                m_apply_handlers = false;
+            }
+
+            if (m_deferred_update)
             {
-                Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = m_search_bar.InputField.text;
-                m_active_filter.SetValueAndForceNotify((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
-                Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = null;
+                if (m_active_filter != null)
+                {
+                    Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = m_search_bar.InputField.text;
+                    m_active_filter.SetValueAndForceNotify((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
+                    Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = null;
+                }
+
+                m_deferred_update = false;
             }
         }
 

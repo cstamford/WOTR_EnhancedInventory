@@ -14,9 +14,14 @@ namespace EnhancedInventory.Events
         {
             Main.RefreshRemappers();
 
-            if (Main.Settings.EnableSearchBar)
+            if (Main.Settings.EnableInventorySearchBar)
             {
-                LoadSearchBar();
+                LoadInventorySearchBar();
+            }
+
+            if (Main.Settings.EnableSpellbookSearchBar)
+            {
+                LoadSpellbookSearchBar();
             }
 
             if (Main.Settings.EnableHighlightableLoot)
@@ -54,15 +59,32 @@ namespace EnhancedInventory.Events
             new Tuple<string, InventoryType>("LootPCView/Window/Collector", InventoryType.LootCollector),
         };
 
-        private void LoadSearchBar()
+        private void LoadInventorySearchBar()
         {
             foreach ((string path, InventoryType type) in m_inventory_paths)
             {
                 Transform filters_block_transform = Game.Instance.UI.MainCanvas.transform.Find(path);
                 if (filters_block_transform != null)
                 {
-                    InventoryController controller = filters_block_transform.gameObject.AddComponent<InventoryController>();
-                    controller.Type = type;
+                    filters_block_transform.gameObject.AddComponent<InventoryController>().Type = type;
+                }
+            }
+        }
+
+        private void LoadSpellbookSearchBar()
+        {
+            string[] paths = new string[]
+            {
+                "ServiceWindowsPCView/SpellbookView/SpellbookScreen", // game
+                "ServiceWindowsConfig/SpellbookView/SpellbookScreen", // world map
+            };
+
+            foreach (string path in paths)
+            {
+                Transform spellbook = Game.Instance.UI.MainCanvas.transform.Find(path);
+                if (spellbook != null)
+                {
+                    spellbook.gameObject.AddComponent<SpellbookController>();
                 }
             }
         }

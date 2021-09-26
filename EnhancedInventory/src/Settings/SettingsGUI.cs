@@ -15,9 +15,15 @@ namespace EnhancedInventory
             DrawFeatureToggles();
             GUILayout.Space(12);
 
-            if (Main.Settings.EnableSearchBar)
+            if (Main.Settings.EnableInventorySearchBar)
             {
-                DrawSearchBarOptions();
+                DrawInventorySearchBarOptions();
+                GUILayout.Space(12);
+            }
+
+            if (Main.Settings.EnableSpellbookSearchBar)
+            {
+                DrawSpellbookSearchBarOptions();
                 GUILayout.Space(12);
             }
 
@@ -39,7 +45,11 @@ namespace EnhancedInventory
             if (!draw_features) return;
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableSearchBar = GUILayout.Toggle(Main.Settings.EnableSearchBar, " Enable search bar");
+            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enable inventory search bar");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enable spellbook search bar");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -51,52 +61,55 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
         }
 
-        private static void DrawSearchBarOptions()
+        private static void DrawInventorySearchBarOptions()
         {
             GUILayout.BeginHorizontal();
-            bool draw_search_bar = FeatureButton("Search Bar");
+            bool draw_search_bar = FeatureButton("Inventory Search Bar");
             GUILayout.EndHorizontal();
 
             if (!draw_search_bar) return;
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SearchBarResetFilterWhenOpeningInv = GUILayout.Toggle(Main.Settings.SearchBarResetFilterWhenOpeningInv, " Reset the selected filter when opening the inventory screen");
+            Main.Settings.InventorySearchBarResetFilterWhenOpening = GUILayout.Toggle(Main.Settings.InventorySearchBarResetFilterWhenOpening, " Reset the selected filter when opening the inventory screen");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SearchBarFocusWhenOpeningInv = GUILayout.Toggle(Main.Settings.SearchBarFocusWhenOpeningInv, " Give the search bar focus when opening the inventory screen");
+            Main.Settings.InventorySearchBarFocusWhenOpening = GUILayout.Toggle(Main.Settings.InventorySearchBarFocusWhenOpening, " Give the search bar focus when opening the inventory screen");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SearchBarScrollResetOnSubmit = GUILayout.Toggle(Main.Settings.SearchBarScrollResetOnSubmit, " When pressing enter to complete a search, the scroll bar will reset to the top of the stash");
+            Main.Settings.InventorySearchBarScrollResetOnSubmit = GUILayout.Toggle(Main.Settings.InventorySearchBarScrollResetOnSubmit, " When pressing enter to complete a search, the scroll bar will reset to the top of the stash");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SearchBarEnableCategoryButtons = GUILayout.Toggle(Main.Settings.SearchBarEnableCategoryButtons, " EXPERIMENTAL: Enable the old category filter buttons in addition to the search bar");
+            Main.Settings.InventorySearchBarEnableCategoryButtons = GUILayout.Toggle(Main.Settings.InventorySearchBarEnableCategoryButtons, " EXPERIMENTAL: Enable the old category filter buttons in addition to the search bar");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(4);
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(8);
-            bool draw_criteria = FeatureButton("Search Criteria", false);
+            bool draw_criteria = FeatureButton("Inventory Search Criteria", false);
             GUILayout.EndHorizontal();
 
             if (draw_criteria)
             {
-                SearchCriteria new_options = default;
+                InventorySearchCriteria new_options = default;
 
-                foreach (SearchCriteria flag in EnumHelper.ValidSearchCriteria)
+                foreach (InventorySearchCriteria flag in EnumHelper.ValidInventorySearchCriteria)
                 {
                     GUILayout.BeginHorizontal();
-                    if (GUILayout.Toggle(Main.Settings.SearchCriteria.HasFlag(flag), $" {flag}"))
+                    GUILayout.Space(12);
+
+                    if (GUILayout.Toggle(Main.Settings.InventorySearchCriteria.HasFlag(flag), $" {flag}"))
                     {
                         new_options |= flag;
                     }
+
                     GUILayout.EndHorizontal();
                 }
 
-                Main.Settings.SearchCriteria = new_options;
+                Main.Settings.InventorySearchCriteria = new_options;
 
                 GUILayout.Space(4);
             }
@@ -126,6 +139,48 @@ namespace EnhancedInventory
                 }
 
                 Main.Settings.FilterOptions = new_options;
+            }
+        }
+
+        private static void DrawSpellbookSearchBarOptions()
+        {
+            GUILayout.BeginHorizontal();
+            bool draw_search_bar = FeatureButton("Spellbook Search Bar");
+            GUILayout.EndHorizontal();
+
+            if (!draw_search_bar) return;
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookSearchBarFocusWhenOpening = GUILayout.Toggle(Main.Settings.SpellbookSearchBarFocusWhenOpening, " Give the search bar focus when opening the spelbook screen");
+            GUILayout.EndHorizontal();
+
+            GUILayout.Space(4);
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(8);
+            bool draw_criteria = FeatureButton("Spellbook Search Criteria", false);
+            GUILayout.EndHorizontal();
+
+            if (draw_criteria)
+            {
+                SpellbookSearchCriteria new_options = default;
+
+                foreach (SpellbookSearchCriteria flag in EnumHelper.ValidSpellbookSearchCriteria)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(12);
+
+                    if (GUILayout.Toggle(Main.Settings.SpellbookSearchCriteria.HasFlag(flag), $" {flag}"))
+                    {
+                        new_options |= flag;
+                    }
+
+                    GUILayout.EndHorizontal();
+                }
+
+                Main.Settings.SpellbookSearchCriteria = new_options;
+
+                GUILayout.Space(4);
             }
         }
 

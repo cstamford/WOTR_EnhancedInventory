@@ -17,7 +17,7 @@ namespace EnhancedInventory.Util
         public GameObject DropdownIconObject;
         public TextMeshProUGUI PlaceholderText;
 
-        public SearchBar(Transform parent, string name = "EnhancedInventory_SearchBar")
+        public SearchBar(Transform parent, string placeholder, string name = "EnhancedInventory_SearchBar")
         {
             Transform prefab_transform = Game.Instance.UI.MainCanvas.transform.Find("ChargenPCView/ContentWrapper/DetailedViewZone/ChargenFeaturesDetailedPCView/FeatureSelectorPlace/FeatureSelectorView/FeatureSearchView");
 
@@ -45,7 +45,7 @@ namespace EnhancedInventory.Util
             DropdownButton.OnLeftClick.AddListener(delegate { OnDropdownButton(); });
 
             GameObject.Destroy(GameObject.GetComponent<CharGenFeatureSearchPCView>()); // controller from where we stole the search bar
-            InputField.transform.Find("Text Area/Placeholder").GetComponent<TextMeshProUGUI>().SetText("Enter item name...");
+            InputField.transform.Find("Text Area/Placeholder").GetComponent<TextMeshProUGUI>().SetText(placeholder);
             Dropdown.ClearOptions();
 
             GameObject.Destroy(Dropdown.template.Find("Viewport/TopBorderImage").gameObject);

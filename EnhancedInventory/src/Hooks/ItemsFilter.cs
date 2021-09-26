@@ -88,22 +88,22 @@ namespace EnhancedInventory.Hooks
             {
                 __result = false;
 
-                if (Main.Settings.SearchCriteria.HasFlag(SearchCriteria.ItemName))
+                if (Main.Settings.InventorySearchCriteria.HasFlag(InventorySearchCriteria.ItemName))
                 {
                     __result |= blueprintItem.Name.IndexOf(SearchContents, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
-                if (Main.Settings.SearchCriteria.HasFlag(SearchCriteria.ItemType))
+                if (Main.Settings.InventorySearchCriteria.HasFlag(InventorySearchCriteria.ItemType))
                 {
                     __result |= blueprintItem.ItemType.ToString().IndexOf(SearchContents, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
-                if (Main.Settings.SearchCriteria.HasFlag(SearchCriteria.ItemSubtype))
+                if (Main.Settings.InventorySearchCriteria.HasFlag(InventorySearchCriteria.ItemSubtype))
                 {
                     __result |= blueprintItem.SubtypeName.IndexOf(SearchContents, StringComparison.OrdinalIgnoreCase) >= 0;
                 }
 
-                if (Main.Settings.SearchCriteria.HasFlag(SearchCriteria.ItemDescription))
+                if (Main.Settings.InventorySearchCriteria.HasFlag(InventorySearchCriteria.ItemDescription))
                 {
                     __result |= blueprintItem.Description.IndexOf(SearchContents, StringComparison.OrdinalIgnoreCase) >= 0;
                 }

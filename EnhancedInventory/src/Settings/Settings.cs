@@ -5,7 +5,7 @@ using UnityModManagerNet;
 namespace EnhancedInventory.Settings
 {
     [Flags]
-    public enum SearchCriteria
+    public enum InventorySearchCriteria
     {
         ItemName        = 1 << 0,
         ItemType        = 1 << 1,
@@ -13,6 +13,17 @@ namespace EnhancedInventory.Settings
         ItemDescription = 1 << 3,
 
         Default = ItemName | ItemType | ItemSubtype
+    }
+
+    [Flags]
+    public enum SpellbookSearchCriteria
+    {
+        SpellName        = 1 << 0,
+        SpellDescription = 1 << 1,
+        SpellSaves       = 1 << 2,
+        SpellSchool      = 1 << 3,
+
+        Default = SpellName | SpellSaves | SpellSchool,
     }
 
     [Flags]
@@ -84,16 +95,20 @@ namespace EnhancedInventory.Settings
 
     public class Data : UnityModManager.ModSettings
     {
-        public bool EnableSearchBar = true;
+        public bool EnableInventorySearchBar = true;
+        public bool EnableSpellbookSearchBar = true;
         public bool EnableHighlightableLoot = true;
         public bool EnableVisualOverhaulSorting = true;
 
-        public bool SearchBarResetFilterWhenOpeningInv = false;
-        public bool SearchBarFocusWhenOpeningInv = true;
-        public bool SearchBarScrollResetOnSubmit = true;
-        public bool SearchBarEnableCategoryButtons = false;
+        public bool InventorySearchBarResetFilterWhenOpening = false;
+        public bool InventorySearchBarFocusWhenOpening = true;
+        public bool InventorySearchBarScrollResetOnSubmit = true;
+        public bool InventorySearchBarEnableCategoryButtons = false;
 
-        public SearchCriteria SearchCriteria = SearchCriteria.Default;
+        public bool SpellbookSearchBarFocusWhenOpening = true;
+
+        public InventorySearchCriteria InventorySearchCriteria = InventorySearchCriteria.Default;
+        public SpellbookSearchCriteria SpellbookSearchCriteria = SpellbookSearchCriteria.Default;
         public FilterCategories FilterOptions = FilterCategories.Default;
         public SorterCategories SorterOptions = SorterCategories.Default;
         public HighlightLootableOptions HighlightLootOptions = HighlightLootableOptions.Default;

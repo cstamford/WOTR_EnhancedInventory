@@ -20,10 +20,31 @@ namespace EnhancedInventory.Util
         WeightValueDown = 12
     }
 
+    public enum SpellbookFilter
+    {
+        NoFilter,
+        TargetsFortitude,
+        TargetsReflex,
+        TargetsWill,
+        SpellLevel0,
+        SpellLevel1,
+        SpellLevel2,
+        SpellLevel3,
+        SpellLevel4,
+        SpellLevel5,
+        SpellLevel6,
+        SpellLevel7,
+        SpellLevel8,
+        SpellLevel9,
+    }
+
     public static class EnumHelper
     {
-        public static IEnumerable<SearchCriteria> ValidSearchCriteria
-            = Enum.GetValues(typeof(SearchCriteria)).Cast<SearchCriteria>().Where(i => i != SearchCriteria.Default);
+        public static IEnumerable<InventorySearchCriteria> ValidInventorySearchCriteria
+            = Enum.GetValues(typeof(InventorySearchCriteria)).Cast<InventorySearchCriteria>().Where(i => i != InventorySearchCriteria.Default);
+
+        public static IEnumerable<SpellbookSearchCriteria> ValidSpellbookSearchCriteria
+            = Enum.GetValues(typeof(SpellbookSearchCriteria)).Cast<SpellbookSearchCriteria>().Where(i => i != SpellbookSearchCriteria.Default);
 
         public static IEnumerable<HighlightLootableOptions> ValidHighlightLootableOptions
             = Enum.GetValues(typeof(HighlightLootableOptions)).Cast<HighlightLootableOptions>().Where(i => i != HighlightLootableOptions.Default);
