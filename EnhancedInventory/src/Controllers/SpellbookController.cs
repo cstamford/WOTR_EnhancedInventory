@@ -56,6 +56,8 @@ namespace EnhancedInventory.Controllers
                 transform.Find("MainContainer/KnownSpells/StandardScrollView").GetComponent<ScrollRectExtended>().ScrollToTop();
             });
 
+            m_search_bar.DropdownIconObject.SetActive(false);
+
             m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { m_deferred_update = true; });
 
             // Setup string options...
