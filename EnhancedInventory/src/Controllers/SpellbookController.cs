@@ -142,11 +142,11 @@ namespace EnhancedInventory.Controllers
                         DrawPossibleSpells(widgets);
                     }
 
-                    if (m_all_button.isOn)
+                    foreach (SpellbookKnownSpellPCView spell in transform
+                        .Find("MainContainer/KnownSpells/StandardScrollView/Viewport/Content")
+                        .GetComponentsInChildren<SpellbookKnownSpellPCView>())
                     {
-                        foreach (SpellbookKnownSpellPCView spell in transform
-                            .Find("MainContainer/KnownSpells/StandardScrollView/Viewport/Content")
-                            .GetComponentsInChildren<SpellbookKnownSpellPCView>())
+                        if (m_all_button.isOn)
                         {
                             // Event per slot in the prefab to change the selected option.
                             m_handlers.Add(spell.m_Button.OnLeftClickAsObservable().Subscribe(delegate (Unit _)
@@ -154,21 +154,21 @@ namespace EnhancedInventory.Controllers
                                 SelectMemorisationLevel(spell.ViewModel.SpellLevel);
                             }));
 
-                            // If we're in all mode, draw the level.
-                            if (Main.Settings.SpellbookShowLevelWhenViewingAllSpells && m_all_button.isOn)
+                            // Draw the level...
+                            if (Main.Settings.SpellbookShowLevelWhenViewingAllSpells)
                             {
                                 spell.m_SpellLevelContainer.SetActive(true);
                             }
+                        }
 
-                            // If we've chosen to disable metamagic circles, axe them.
-                            if (Main.Settings.SpellbookHideEmptyMetamagicCircles)
+                        // If we've chosen to disable metamagic circles, axe them.
+                        if (Main.Settings.SpellbookHideEmptyMetamagicCircles)
+                        {
+                            for (int i = 0; i < spell.ViewModel.SpellMetamagicFeatures.Count; ++i)
                             {
-                                for (int i = 0; i < spell.ViewModel.SpellMetamagicFeatures.Count; ++i)
+                                if (!spell.ViewModel.AppliedMetamagicFeatures.Contains(spell.ViewModel.SpellMetamagicFeatures[i]))
                                 {
-                                    if (!spell.ViewModel.AppliedMetamagicFeatures.Contains(spell.ViewModel.SpellMetamagicFeatures[i]))
-                                    {
-                                        spell.m_MetamagicIcons[i].gameObject.SetActive(false);
-                                    }
+                                    spell.m_MetamagicIcons[i].gameObject.SetActive(false);
                                 }
                             }
                         }
