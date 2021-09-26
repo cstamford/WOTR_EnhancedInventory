@@ -45,8 +45,7 @@ namespace EnhancedInventory.Controllers
 
             m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int _)
             {
-                m_search_bar.DropdownIconObject.GetComponent<Image>().sprite = m_search_icons[m_search_bar.Dropdown.value]?.sprite;
-                m_search_bar.DropdownIconObject.gameObject.SetActive(m_search_bar.DropdownIconObject.GetComponent<Image>().sprite != null);
+                UpdateDropdownIcon();
                 m_deferred_update = true;
             });
 
@@ -113,6 +112,8 @@ namespace EnhancedInventory.Controllers
 
             m_search_icons = images.ToArray();
 
+            UpdateDropdownIcon();
+
             // Tweak positioning depending on user config...
 
             RectTransform search_transform = m_search_bar.GameObject.GetComponent<RectTransform>();
@@ -128,6 +129,15 @@ namespace EnhancedInventory.Controllers
                     sb_transform.localPosition.y + 23.0f,
                     sb_transform.localPosition.z);
                 sb_transform.localScale = new Vector3(0.6f, 0.6f, 1.0f);
+
+                // Select the appropriate handler, if possible, in the switch bar, when selected using the dropdown.
+                m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int idx)
+                {
+                    if (idx <= (int)ItemsFilter.FilterType.NonUsable)
+                    {
+                        switch_bar.transform.GetChild(idx).GetComponent<ToggleWorkaround>().isOn = true;
+                    }
+                });
 
                 // destroy the top and bottom gfx as they cause a lot of noise
                 Destroy(m_search_bar.GameObject.transform.Find("Background/Decoration/TopLineImage").gameObject);
@@ -193,7 +203,7 @@ namespace EnhancedInventory.Controllers
                 if (switch_bar != null)
                 {
                     // Add listeners to each button; if the button changes, we change the dropdown to match.
-                    foreach (ItemsFilter.FilterType filter in EnumHelper.ValidFilterCategories)
+                    foreach (ItemsFilter.FilterType filter in Enum.GetValues(typeof(ItemsFilter.FilterType)))
                     {
                         int idx = (int)filter;
                         int mapped_idx = Main.FilterMapper.From(idx);
@@ -237,6 +247,12 @@ namespace EnhancedInventory.Controllers
 
                 m_deferred_update = false;
             }
+        }
+
+        private void UpdateDropdownIcon()
+        {
+            m_search_bar.DropdownIconObject.GetComponent<Image>().sprite = m_search_icons[m_search_bar.Dropdown.value]?.sprite;
+            m_search_bar.DropdownIconObject.gameObject.SetActive(m_search_bar.DropdownIconObject.GetComponent<Image>().sprite != null);
         }
 
         public static string PathToFilterBlock(InventoryType type)
