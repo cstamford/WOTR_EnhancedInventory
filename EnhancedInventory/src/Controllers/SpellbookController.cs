@@ -13,6 +13,8 @@ using Kingmaker.UI.MVVM._VM.ServiceWindows.Spellbook.KnownSpells;
 using Kingmaker.UnitLogic;
 using Owlcat.Runtime.UI.Controls.Other;
 using Owlcat.Runtime.UI.Controls.Button;
+using Kingmaker.UI.MVVM._VM.ServiceWindows.Spellbook.Metamagic;
+using HarmonyLib;
 
 namespace EnhancedInventory.Controllers
 {
@@ -109,7 +111,29 @@ namespace EnhancedInventory.Controllers
                 SpellbookPCView spellbook_pc_view = GetComponentInParent<SpellbookPCView>();
                 m_spellbook = spellbook_pc_view.ViewModel.CurrentSpellbook;
                 m_selected_spell = spellbook_pc_view.ViewModel.CurrentSelectedSpell;
-                m_spellbook.Subscribe(delegate (Spellbook book) { m_deferred_update = true; });
+
+                // This event is fired when the metamagic builder is opened or shut.
+                spellbook_pc_view.ViewModel.MetamagicBuilderMode.Subscribe(delegate (bool state)
+                {
+                    levels.gameObject.SetActive(!state);
+
+                    if (!state) return;
+
+                    // If we've been opened, we need to register for the callback every time a new spell is created.
+                    Action old_action = spellbook_pc_view.ViewModel.SpellbookMetamagicMixerVM.m_OnComplete;
+                    AccessTools.FieldRef<SpellbookMetamagicMixerVM, Action> field = AccessTools.FieldRefAccess<SpellbookMetamagicMixerVM, Action>(nameof(SpellbookMetamagicMixerVM.m_OnComplete));
+                    field.Invoke(spellbook_pc_view.ViewModel.SpellbookMetamagicMixerVM) = delegate
+                    {
+                        old_action();
+                        m_deferred_update = true;
+                    };
+                });
+
+                // This event is fired when changing spellbook or updating the spells inside the spellbook.
+                spellbook_pc_view.m_CharacteristicsView.ViewModel.RefreshCommand.ObserveLastValueOnLateUpdate().Subscribe(delegate (Unit _)
+                {
+                    m_deferred_update = true;
+                });
 
                 if (Main.Settings.SpellbookSearchBarFocusWhenOpening)
                 {
