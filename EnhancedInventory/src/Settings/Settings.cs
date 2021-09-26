@@ -108,6 +108,8 @@ namespace EnhancedInventory.Settings
         public bool SpellbookSearchBarFocusWhenOpening = true;
         public bool SpellbookShowAllSpellsByDefault = true;
         public bool SpellbookShowMetamagicByDefault = true;
+        public bool SpellbookShowLevelWhenViewingAllSpells = true;
+        public bool SpellbookHideEmptyMetamagicCircles = true;
 
         public InventorySearchCriteria InventorySearchCriteria = InventorySearchCriteria.Default;
         public SpellbookSearchCriteria SpellbookSearchCriteria = SpellbookSearchCriteria.Default;

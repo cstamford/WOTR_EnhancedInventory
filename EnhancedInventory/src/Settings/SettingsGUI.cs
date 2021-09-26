@@ -162,6 +162,14 @@ namespace EnhancedInventory
             Main.Settings.SpellbookShowMetamagicByDefault = GUILayout.Toggle(Main.Settings.SpellbookShowMetamagicByDefault, " Show metamagic by default");
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookShowLevelWhenViewingAllSpells = GUILayout.Toggle(Main.Settings.SpellbookShowLevelWhenViewingAllSpells, " Show level when the spellbook is showing all known spells");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookHideEmptyMetamagicCircles = GUILayout.Toggle(Main.Settings.SpellbookHideEmptyMetamagicCircles, " Hide the empty grey metamagic circles above spells");
+            GUILayout.EndHorizontal();
+
             GUILayout.Space(4);
 
             GUILayout.BeginHorizontal();

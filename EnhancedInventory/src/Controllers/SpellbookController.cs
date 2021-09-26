@@ -153,6 +153,24 @@ namespace EnhancedInventory.Controllers
                             {
                                 SelectMemorisationLevel(spell.ViewModel.SpellLevel);
                             }));
+
+                            // If we're in all mode, draw the level.
+                            if (Main.Settings.SpellbookShowLevelWhenViewingAllSpells && m_all_button.isOn)
+                            {
+                                spell.m_SpellLevelContainer.SetActive(true);
+                            }
+
+                            // If we've chosen to disable metamagic circles, axe them.
+                            if (Main.Settings.SpellbookHideEmptyMetamagicCircles)
+                            {
+                                for (int i = 0; i < spell.ViewModel.SpellMetamagicFeatures.Count; ++i)
+                                {
+                                    if (!spell.ViewModel.AppliedMetamagicFeatures.Contains(spell.ViewModel.SpellMetamagicFeatures[i]))
+                                    {
+                                        spell.m_MetamagicIcons[i].gameObject.SetActive(false);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
