@@ -15,6 +15,11 @@ using Owlcat.Runtime.UI.Controls.Other;
 using Owlcat.Runtime.UI.Controls.Button;
 using Kingmaker.UI.MVVM._VM.ServiceWindows.Spellbook.Metamagic;
 using HarmonyLib;
+using Kingmaker.UI;
+using TMPro;
+using Kingmaker.UI.MVVM._PCView.ServiceWindows.Spellbook.Switchers;
+using UnityEngine.UI;
+using Kingmaker.UI.MVVM._VM.ServiceWindows.Spellbook.Switchers;
 
 namespace EnhancedInventory.Controllers
 {
@@ -29,9 +34,13 @@ namespace EnhancedInventory.Controllers
         private SearchBar m_search_bar;
         private SpellbookKnownSpellPCView m_known_spell_prefab;
         private IReactiveProperty<Spellbook> m_spellbook;
+        private IReactiveProperty<SpellbookLevelVM> m_spellbook_level;
         private IReactiveProperty<AbilityDataVM> m_selected_spell;
-        private List<IDisposable> m_handlers = new List<IDisposable>();
 
+        private ToggleWorkaround m_metamagic_checkbox;
+        private Toggle m_all_button;
+
+        private List<IDisposable> m_handlers = new List<IDisposable>();
         private bool m_deferred_update = true;
 
         private void Awake()
@@ -39,20 +48,12 @@ namespace EnhancedInventory.Controllers
             m_search_bar = new SearchBar(transform.Find("MainContainer"), "Enter spell name...");
 
             m_search_bar.GameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
-            m_search_bar.GameObject.transform.localPosition = new Vector2(325.0f, 390.0f);
+            m_search_bar.GameObject.transform.localPosition = new Vector2(-63.0f, 390.0f);
 
             m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int val)
             {
                 m_deferred_update = true;
-
-                // Reset scroll.
                 transform.Find("MainContainer/KnownSpells/StandardScrollView").GetComponent<ScrollRectExtended>().ScrollToTop();
-
-                // If choosing a spell level, also select the appropriate memorisation option.
-                if (val >= (int)SpellbookFilter.SpellLevel0 && val <= (int)SpellbookFilter.SpellLevel9)
-                {
-                    SelectMemorisationLevel(val - (int)SpellbookFilter.SpellLevel0);
-                }
             });
 
             m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { m_deferred_update = true; });
@@ -63,16 +64,6 @@ namespace EnhancedInventory.Controllers
             options[(int)SpellbookFilter.TargetsFortitude] = "Spell targets fortitude";
             options[(int)SpellbookFilter.TargetsReflex] = "Spell targets reflex";
             options[(int)SpellbookFilter.TargetsWill] = "Spell targets will";
-            options[(int)SpellbookFilter.SpellLevel0] = "Cantrips";
-            options[(int)SpellbookFilter.SpellLevel1] = "1st level";
-            options[(int)SpellbookFilter.SpellLevel2] = "2nd level";
-            options[(int)SpellbookFilter.SpellLevel3] = "3rd level";
-            options[(int)SpellbookFilter.SpellLevel4] = "4th level";
-            options[(int)SpellbookFilter.SpellLevel5] = "5th level";
-            options[(int)SpellbookFilter.SpellLevel6] = "6th level";
-            options[(int)SpellbookFilter.SpellLevel7] = "7th level";
-            options[(int)SpellbookFilter.SpellLevel8] = "8th level";
-            options[(int)SpellbookFilter.SpellLevel9] = "9th level";
             m_search_bar.Dropdown.AddOptions(options);
 
             // Make a dummy view that does nothing - we handle the logic in here.
@@ -86,12 +77,27 @@ namespace EnhancedInventory.Controllers
             // Disable the current spell level indicator, it isn't used any more.
             Destroy(transform.Find("MainContainer/Information/CurrentLevel").gameObject);
 
-            // TEMP - fix later...
+            // Create button to toggle metamagic.
+            GameObject metamagic_button = Instantiate(transform.Find("MainContainer/KnownSpells/Toggle").gameObject, transform.Find("MainContainer/KnownSpells"));
+            metamagic_button.name = "ToggleMetamagic";
+            metamagic_button.transform.localPosition = new Vector2(501.0f, -405.0f);
+            metamagic_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show metamagic";
+            m_metamagic_checkbox = metamagic_button.GetComponent<ToggleWorkaround>();
+            m_metamagic_checkbox.onValueChanged.AddListener(delegate (bool _) { m_deferred_update = true; });
+            m_metamagic_checkbox.isOn = true;
+
+            // Move the levels display (which is still used for displaying memorized spells).
+            // Also hide the metamagic option.
+            Transform levels = transform.Find("MainContainer/Levels");
+            levels.localPosition = new Vector2(506.0f, 382.0f);
+
+            // TODO: Bring this back later...
             Destroy(transform.Find("MainContainer/KnownSpells/Toggle").gameObject);
         }
 
-        private void OnEnable()
+        private void OnDisable()
         {
+            Destroy(m_all_button.gameObject);
             m_spellbook = null;
         }
 
@@ -101,22 +107,43 @@ namespace EnhancedInventory.Controllers
 
             if (m_spellbook == null)
             {
-                // Move the levels display (which is still used for displaying memorized spells).
-                // Also hide the metamagic option.
+                // Add button for "all spell levels".
                 Transform levels = transform.Find("MainContainer/Levels");
-                levels.localPosition = new Vector2(-450.0f, -73.0f);
-                levels.localScale = new Vector3(0.6f, 0.6f, 1.0f);
+
+                GameObject all = Instantiate(levels.GetChild(0).gameObject, levels.parent);
+                all.name = "AllButton";
+                all.transform.localPosition = new Vector2(191.0f, 382.0f);
+
+                TextMeshProUGUI all_text = all.transform.Find("LevelLabel").GetComponent<TextMeshProUGUI>();
+                all_text.text = "All";
+                all_text.fontSize = 26;
+
+                all.transform.Find("Image").GetComponent<Image>().overrideSprite = null;
+
+                m_all_button = all.AddComponent<Toggle>();
+
+                m_all_button.onValueChanged.AddListener(delegate (bool state)
+                {
+                    m_deferred_update = true;
+                    all.transform.Find("Active").gameObject.SetActive(state);
+                });
+
+                m_all_button.isOn = true;
+
+                Destroy(all.GetComponent<OwlcatMultiButton>());
+                Destroy(all.GetComponent<SpellbookLevelSwitcherEntityPCView>());
 
                 // Grab the various state we need...
                 SpellbookPCView spellbook_pc_view = GetComponentInParent<SpellbookPCView>();
                 m_spellbook = spellbook_pc_view.ViewModel.CurrentSpellbook;
+                m_spellbook_level = spellbook_pc_view.ViewModel.CurrentSpellbookLevel;
                 m_selected_spell = spellbook_pc_view.ViewModel.CurrentSelectedSpell;
+
+                m_spellbook_level.Subscribe(delegate (SpellbookLevelVM _) { m_deferred_update = true; });
 
                 // This event is fired when the metamagic builder is opened or shut.
                 spellbook_pc_view.ViewModel.MetamagicBuilderMode.Subscribe(delegate (bool state)
                 {
-                    levels.gameObject.SetActive(!state);
-
                     if (!state) return;
 
                     // If we've been opened, we need to register for the callback every time a new spell is created.
@@ -124,8 +151,8 @@ namespace EnhancedInventory.Controllers
                     AccessTools.FieldRef<SpellbookMetamagicMixerVM, Action> field = AccessTools.FieldRefAccess<SpellbookMetamagicMixerVM, Action>(nameof(SpellbookMetamagicMixerVM.m_OnComplete));
                     field.Invoke(spellbook_pc_view.ViewModel.SpellbookMetamagicMixerVM) = delegate
                     {
-                        old_action();
                         m_deferred_update = true;
+                        old_action();
                     };
                 });
 
@@ -155,28 +182,30 @@ namespace EnhancedInventory.Controllers
 
                 if (m_spellbook.Value != null)
                 {
+                    SpellbookFilter filter = (SpellbookFilter)m_search_bar.Dropdown.value;
                     List<AbilityDataVM> spells_as_widget = new List<AbilityDataVM>();
 
-                    int filter = m_search_bar.Dropdown.value;
-                    SpellbookFilter filter_enum = (SpellbookFilter)filter;
-                    bool filter_on_spell_level = filter >= (int)SpellbookFilter.SpellLevel0 && filter <= (int)SpellbookFilter.SpellLevel9;
+                    int spellbook_level = m_spellbook_level.Value.Level;
 
                     for (int level = 0; level <= 9; ++level)
                     {
-                        if (filter_on_spell_level && level != filter - (int)SpellbookFilter.SpellLevel0) continue;
+                        if (!m_all_button.isOn && spellbook_level != 10 && level != spellbook_level) continue;
 
                         foreach (AbilityData spell in UIUtilityUnit.GetKnownSpellsForLevel(level, m_spellbook.Value))
                         {
+                            if (!m_metamagic_checkbox.isOn && spell.MetamagicData != null) continue;
+                            if (spellbook_level == 10 && spell.MetamagicData == null) continue;
+
                             string save = spell.Blueprint.LocalizedSavingThrow;
 
-                            if (filter_enum == SpellbookFilter.TargetsFortitude ||
-                                filter_enum == SpellbookFilter.TargetsReflex ||
-                                filter_enum == SpellbookFilter.TargetsWill)
+                            if (filter == SpellbookFilter.TargetsFortitude ||
+                                filter == SpellbookFilter.TargetsReflex ||
+                                filter == SpellbookFilter.TargetsWill)
                             {
                                 if (string.IsNullOrWhiteSpace(save)) continue;
-                                else if (filter_enum == SpellbookFilter.TargetsFortitude && save.IndexOf("Fortitude", StringComparison.OrdinalIgnoreCase) == -1) continue;
-                                else if (filter_enum == SpellbookFilter.TargetsReflex && save.IndexOf("Reflex", StringComparison.OrdinalIgnoreCase) == -1) continue;
-                                else if (filter_enum == SpellbookFilter.TargetsWill && save.IndexOf("Will", StringComparison.OrdinalIgnoreCase) == -1) continue;
+                                else if (filter == SpellbookFilter.TargetsFortitude && save.IndexOf("Fortitude", StringComparison.OrdinalIgnoreCase) == -1) continue;
+                                else if (filter == SpellbookFilter.TargetsReflex && save.IndexOf("Reflex", StringComparison.OrdinalIgnoreCase) == -1) continue;
+                                else if (filter == SpellbookFilter.TargetsWill && save.IndexOf("Will", StringComparison.OrdinalIgnoreCase) == -1) continue;
                             }
 
                             bool proceed = false;
