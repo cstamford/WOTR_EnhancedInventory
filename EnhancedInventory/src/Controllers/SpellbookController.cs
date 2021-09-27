@@ -17,10 +17,14 @@ using Kingmaker.UI.MVVM._VM.ServiceWindows.Spellbook.Metamagic;
 using HarmonyLib;
 using Kingmaker.UI;
 using TMPro;
-using Kingmaker.UI.MVVM._PCView.ServiceWindows.Spellbook.Switchers;
 using UnityEngine.UI;
 using Kingmaker.UI.MVVM._VM.ServiceWindows.Spellbook.Switchers;
 using Kingmaker.UnitLogic.Abilities.Blueprints;
+using Kingmaker.UI.MVVM._PCView.ServiceWindows.CharacterInfo.Menu;
+using Kingmaker.Items;
+using Kingmaker.Blueprints.Items.Components;
+using Kingmaker.EntitySystem.Entities;
+using Kingmaker.Blueprints;
 
 namespace EnhancedInventory.Controllers
 {
@@ -38,32 +42,28 @@ namespace EnhancedInventory.Controllers
         private IReactiveProperty<SpellbookLevelVM> m_spellbook_level;
         private IReactiveProperty<AbilityDataVM> m_selected_spell;
 
+        private ScrollRectExtended m_scroll_bar;
+
         private SpellbookKnownSpellPCView m_known_spell_prefab;
         private SpellbookSpellPCView m_possible_spell_prefab;
 
-        private ToggleWorkaround m_metamagic_checkbox;
         private ToggleWorkaround m_all_spells_checkbox;
-        private Toggle m_all_button;
+        private ToggleWorkaround m_possible_spells_checkbox;
+        private ToggleWorkaround m_metamagic_checkbox;
+        private Button m_learn_scrolls_button;
 
         private List<IDisposable> m_handlers = new List<IDisposable>();
         private bool m_deferred_update = true;
+        private int m_last_spell_level = -1;
 
         private void Awake()
         {
             m_search_bar = new SearchBar(transform.Find("MainContainer"), "Enter spell name...");
-
             m_search_bar.GameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
-            m_search_bar.GameObject.transform.localPosition = new Vector2(-63.0f, 390.0f);
-
-            m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int val)
-            {
-                m_deferred_update = true;
-                transform.Find("MainContainer/KnownSpells/StandardScrollView").GetComponent<ScrollRectExtended>().ScrollToTop();
-            });
-
+            m_search_bar.GameObject.transform.localPosition = new Vector2(-61.0f, 386.0f);
             m_search_bar.DropdownIconObject.SetActive(false);
-
-            m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { m_deferred_update = true; });
+            m_search_bar.Dropdown.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
+            m_search_bar.InputField.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
 
             // Setup string options...
             List<string> options = Enum.GetValues(typeof(SpellbookFilter)).Cast<SpellbookFilter>().Select(i => i.ToString()).ToList();
@@ -72,6 +72,9 @@ namespace EnhancedInventory.Controllers
             options[(int)SpellbookFilter.TargetsReflex] = "Spell targets reflex";
             options[(int)SpellbookFilter.TargetsWill] = "Spell targets will";
             m_search_bar.Dropdown.AddOptions(options);
+
+            // The scroll bar is used for resetting the scroll.
+            m_scroll_bar = transform.Find("MainContainer/KnownSpells/StandardScrollView").GetComponent<ScrollRectExtended>();
 
             // Make a dummy view that does nothing - we handle the logic in here.
             GetComponentInParent<SpellbookPCView>().m_KnownSpellsView = new DummyKnownSpellsView();
@@ -86,29 +89,68 @@ namespace EnhancedInventory.Controllers
             Destroy(transform.Find("MainContainer/Information/CurrentLevel").gameObject);
 
             // Create button to toggle metamagic.
+            GameObject all_spells_button = Instantiate(transform.Find("MainContainer/KnownSpells/Toggle").gameObject, transform.Find("MainContainer/KnownSpells"));
+            all_spells_button.name = "ToggleAllSpells";
+            all_spells_button.transform.localPosition = new Vector2(501.0f, -405.0f);
+            all_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show all spell levels";
+            m_all_spells_checkbox = all_spells_button.GetComponent<ToggleWorkaround>();
+            m_all_spells_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
+            m_all_spells_checkbox.isOn = Main.Settings.SpellbookShowAllSpellsByDefault;
+
             GameObject metamagic_button = Instantiate(transform.Find("MainContainer/KnownSpells/Toggle").gameObject, transform.Find("MainContainer/KnownSpells"));
             metamagic_button.name = "ToggleMetamagic";
-            metamagic_button.transform.localPosition = new Vector2(501.0f, -405.0f);
+            metamagic_button.transform.localPosition = new Vector2(501.0f, -480.0f);
             metamagic_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show metamagic";
             m_metamagic_checkbox = metamagic_button.GetComponent<ToggleWorkaround>();
-            m_metamagic_checkbox.onValueChanged.AddListener(delegate (bool _) { m_deferred_update = true; });
+            m_metamagic_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
             m_metamagic_checkbox.isOn = Main.Settings.SpellbookShowMetamagicByDefault;
 
-            GameObject all_spells_button = transform.Find("MainContainer/KnownSpells/Toggle").gameObject;
-            all_spells_button.name = "ToggleAllSpells";
-            all_spells_button.transform.localPosition = new Vector2(501.0f, -443.0f);
-            m_all_spells_checkbox = all_spells_button.GetComponent<ToggleWorkaround>();
-            m_all_spells_checkbox.onValueChanged.AddListener(delegate (bool _) { m_deferred_update = true; });
+            GameObject possible_spells_button = transform.Find("MainContainer/KnownSpells/Toggle").gameObject;
+            possible_spells_button.name = "TogglePossibleSpells";
+            possible_spells_button.transform.localPosition = new Vector2(501.0f, -443.0f);
+            possible_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show unlearned spells";
+            m_possible_spells_checkbox = possible_spells_button.GetComponent<ToggleWorkaround>();
+            m_possible_spells_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
 
             // Move the levels display (which is still used for displaying memorized spells).
             // Also hide the metamagic option.
             Transform levels = transform.Find("MainContainer/Levels");
-            levels.localPosition = new Vector2(506.0f, 382.0f);
+            levels.localPosition = new Vector2(400.0f, 385.0f);
+
+            // Shamelessly steal a button from the inventory and repurpose it for our nefarious deeds.
+            GameObject learn_spells_object = Instantiate(transform.parent.parent.Find("CharacterInfoView/CharacterScreen/Menu/Button").gameObject, transform.Find("MainContainer"));
+            learn_spells_object.name = "LearnAllSpells";
+            learn_spells_object.transform.localPosition = new Vector2(800.0f, -430.0f);
+
+            Transform existing_bg = learn_spells_object.transform.Find("ButtonBackground");
+            learn_spells_object.AddComponent<Image>().sprite = existing_bg.GetComponent<Image>().sprite;
+
+            RectTransform rect = learn_spells_object.GetComponent<RectTransform>();
+            rect.sizeDelta = new Vector2(150.0f, 60.0f);
+
+            Destroy(existing_bg.gameObject);
+            Destroy(learn_spells_object.transform.Find("Selected").gameObject);
+            Destroy(learn_spells_object.GetComponent<CharInfoMenuEntityPCView>());
+            Destroy(learn_spells_object.GetComponent<OwlcatMultiButton>());
+
+            m_learn_scrolls_button = learn_spells_object.AddComponent<Button>();
+            m_learn_scrolls_button.onClick.AddListener(delegate
+            {
+                m_deferred_update = true;
+
+                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                foreach (ItemEntity item in GetLearnableScrolls())
+                {
+                    CopyScroll copy = item.Blueprint.GetComponent<CopyScroll>();
+                    copy.Copy(item, unit);
+                }
+            });
+
+            UpdateLearnScrollButton();
         }
 
-        private void OnDisable()
+        private void OnEnable()
         {
-            Destroy(m_all_button.gameObject);
             m_spellbook = null;
         }
 
@@ -130,6 +172,8 @@ namespace EnhancedInventory.Controllers
 
                 m_handlers.Clear();
 
+                UpdateLearnScrollButton();
+
                 WidgetListMVVM widgets = transform.Find("MainContainer/KnownSpells").GetComponent<WidgetListMVVM>();
                 widgets.Clear();
 
@@ -137,7 +181,7 @@ namespace EnhancedInventory.Controllers
                 {
                     DrawKnownSpells(widgets);
 
-                    if (m_all_spells_checkbox.isOn)
+                    if (m_possible_spells_checkbox.isOn)
                     {
                         DrawPossibleSpells(widgets);
                     }
@@ -146,7 +190,7 @@ namespace EnhancedInventory.Controllers
                         .Find("MainContainer/KnownSpells/StandardScrollView/Viewport/Content")
                         .GetComponentsInChildren<SpellbookKnownSpellPCView>())
                     {
-                        if (m_all_button.isOn)
+                        if (m_all_spells_checkbox.isOn)
                         {
                             // Event per slot in the prefab to change the selected option.
                             m_handlers.Add(spell.m_Button.OnLeftClickAsObservable().Subscribe(delegate (Unit _)
@@ -162,7 +206,7 @@ namespace EnhancedInventory.Controllers
                         }
 
                         // If we've chosen to disable metamagic circles, axe them.
-                        if (Main.Settings.SpellbookHideEmptyMetamagicCircles)
+                        if (!Main.Settings.SpellbookShowEmptyMetamagicCircles)
                         {
                             for (int i = 0; i < spell.ViewModel.SpellMetamagicFeatures.Count; ++i)
                             {
@@ -225,40 +269,25 @@ namespace EnhancedInventory.Controllers
 
         private void Setup()
         {
-            // Add button for "all spell levels".
-            Transform levels = transform.Find("MainContainer/Levels");
-
-            GameObject all = Instantiate(levels.GetChild(0).gameObject, levels.parent);
-            all.name = "AllButton";
-            all.transform.localPosition = new Vector2(191.0f, 382.0f);
-
-            TextMeshProUGUI all_text = all.transform.Find("LevelLabel").GetComponent<TextMeshProUGUI>();
-            all_text.text = "All";
-            all_text.fontSize = 26;
-
-            all.transform.Find("Image").GetComponent<Image>().overrideSprite = null;
-
-            m_all_button = all.AddComponent<Toggle>();
-
-            m_all_button.onValueChanged.AddListener(delegate (bool state)
-            {
-                m_deferred_update = true;
-                all.transform.Find("Active").gameObject.SetActive(state);
-            });
-
-            m_all_button.isOn = Main.Settings.SpellbookShowAllSpellsByDefault;
-
-            Destroy(all.transform.Find("NotAccessible").gameObject);
-            Destroy(all.GetComponent<OwlcatMultiButton>());
-            Destroy(all.GetComponent<SpellbookLevelSwitcherEntityPCView>());
-
             // Grab the various state we need...
             SpellbookPCView spellbook_pc_view = GetComponentInParent<SpellbookPCView>();
             m_spellbook = spellbook_pc_view.ViewModel.CurrentSpellbook;
             m_spellbook_level = spellbook_pc_view.ViewModel.CurrentSpellbookLevel;
             m_selected_spell = spellbook_pc_view.ViewModel.CurrentSelectedSpell;
 
-            m_spellbook_level.Subscribe(delegate (SpellbookLevelVM _) { m_deferred_update = true; });
+            m_spellbook_level.Subscribe(delegate (SpellbookLevelVM level)
+            {
+                if (level == null) return;
+
+                // Changing the selected level nothing for our view unless we're viewing all spells.
+                if (!m_all_spells_checkbox.isOn || level.Level == 10 || m_last_spell_level == 10)
+                {
+                    m_deferred_update = true;
+                    m_scroll_bar.ScrollToTop();
+                }
+
+                m_last_spell_level = level.Level;
+            });
 
             // This event is fired when the metamagic builder is opened or shut.
             spellbook_pc_view.ViewModel.MetamagicBuilderMode.Subscribe(delegate (bool state)
@@ -279,6 +308,7 @@ namespace EnhancedInventory.Controllers
             spellbook_pc_view.m_CharacteristicsView.ViewModel.RefreshCommand.ObserveLastValueOnLateUpdate().Subscribe(delegate (Unit _)
             {
                 m_deferred_update = true;
+                m_scroll_bar.ScrollToTop();
             });
 
             if (Main.Settings.SpellbookSearchBarFocusWhenOpening)
@@ -295,7 +325,7 @@ namespace EnhancedInventory.Controllers
 
             for (int level = 0; level <= 9; ++level)
             {
-                if (!m_all_button.isOn && spellbook_level != 10 && level != spellbook_level) continue;
+                if (!m_all_spells_checkbox.isOn && spellbook_level != 10 && level != spellbook_level) continue;
 
                 foreach (AbilityData spell in UIUtilityUnit.GetKnownSpellsForLevel(level, m_spellbook.Value))
                 {
@@ -324,7 +354,7 @@ namespace EnhancedInventory.Controllers
             {
                 for (int level = 0; level <= 9; ++level)
                 {
-                    if (!m_all_button.isOn && level != spellbook_level) continue;
+                    if (!m_all_spells_checkbox.isOn && level != spellbook_level) continue;
 
                     foreach (BlueprintAbility spell in UIUtilityUnit.GetAllPossibleSpellsForLevel(level, m_spellbook.Value))
                     {
@@ -345,6 +375,29 @@ namespace EnhancedInventory.Controllers
         {
             Transform levels = transform.Find("MainContainer/Levels");
             levels.GetChild(level).GetComponent<OwlcatMultiButton>().OnLeftClick.Invoke();
+        }
+
+        private List<ItemEntity> GetLearnableScrolls()
+        {
+            List<ItemEntity> ret = new List<ItemEntity>();
+
+            UnitEntityData unit = UIUtility.GetCurrentCharacter();
+            foreach (ItemEntity item in UIUtility.GetStashItems())
+            {
+                CopyScroll scroll = item.Blueprint.GetComponent<CopyScroll>();
+                if (scroll != null && scroll.CanCopy(item, unit))
+                {
+                    ret.Add(item);
+                }
+            }
+            return ret;
+        }
+
+        private void UpdateLearnScrollButton()
+        {
+            List<ItemEntity> learnable_scrolls = GetLearnableScrolls();
+            m_learn_scrolls_button.interactable = learnable_scrolls.Count > 0;
+            m_learn_scrolls_button.transform.Find("MenuTitle").GetComponent<TextMeshProUGUI>().text = $"Learn {learnable_scrolls.Count} scrolls";
         }
     }
 }

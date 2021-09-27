@@ -45,11 +45,11 @@ namespace EnhancedInventory
             if (!draw_features) return;
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enable inventory search bar");
+            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enables all associated inventory features");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enable spellbook search bar");
+            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enables all associated spellbook features");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -155,7 +155,7 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SpellbookShowAllSpellsByDefault = GUILayout.Toggle(Main.Settings.SpellbookShowAllSpellsByDefault, " Show all spells by default");
+            Main.Settings.SpellbookShowAllSpellsByDefault = GUILayout.Toggle(Main.Settings.SpellbookShowAllSpellsByDefault, " Show all spell levels by default");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -163,11 +163,11 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SpellbookShowLevelWhenViewingAllSpells = GUILayout.Toggle(Main.Settings.SpellbookShowLevelWhenViewingAllSpells, " Show level when the spellbook is showing all known spells");
+            Main.Settings.SpellbookShowEmptyMetamagicCircles = GUILayout.Toggle(Main.Settings.SpellbookShowEmptyMetamagicCircles, " Show the empty grey metamagic circles above spells");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.SpellbookHideEmptyMetamagicCircles = GUILayout.Toggle(Main.Settings.SpellbookHideEmptyMetamagicCircles, " Hide the empty grey metamagic circles above spells");
+            Main.Settings.SpellbookShowLevelWhenViewingAllSpells = GUILayout.Toggle(Main.Settings.SpellbookShowLevelWhenViewingAllSpells, " Show level of the spell when the spellbook is showing all spell levels");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(4);
