@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityModManagerNet;
+using RES = EnhancedInventory.Properties.Resources;
 
 namespace EnhancedInventory
 {
@@ -96,38 +97,38 @@ namespace EnhancedInventory
 
         public static readonly Dictionary<FilterCategories, Tuple<int, string>> FilterCategoryMap =
             new Dictionary<FilterCategories, Tuple<int, string>>
-        {
-            [FilterCategories.NoFilter]         = new Tuple<int, string>((int)ItemsFilter.FilterType.NoFilter, null),
-            [FilterCategories.Weapon]           = new Tuple<int, string>((int)ItemsFilter.FilterType.Weapon, null),
-            [FilterCategories.Armor]            = new Tuple<int, string>((int)ItemsFilter.FilterType.Armor, null),
-            [FilterCategories.Accessories]      = new Tuple<int, string>((int)ItemsFilter.FilterType.Accessories, null),
-            [FilterCategories.Ingredients]      = new Tuple<int, string>((int)ItemsFilter.FilterType.Ingredients, null),
-            [FilterCategories.Usable]           = new Tuple<int, string>((int)ItemsFilter.FilterType.Usable, null),
-            [FilterCategories.Notable]          = new Tuple<int, string>((int)ItemsFilter.FilterType.Notable, null),
-            [FilterCategories.NonUsable]        = new Tuple<int, string>((int)ItemsFilter.FilterType.NonUsable, null),
-            [FilterCategories.QuickslotUtils]   = new Tuple<int, string>((int)ExpandedFilterType.QuickslotUtilities, "Quickslot utilities"),
-            [FilterCategories.UnlearnedScrolls] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedScrolls, "Unlearned scrolls"),
-            [FilterCategories.UnlearnedRecipes] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedRecipes, "Unlearned recipes"),
-            [FilterCategories.UnreadDocuments]  = new Tuple<int, string>((int)ExpandedFilterType.UnreadDocuments, "Unread documents"),
-            [FilterCategories.UsableWithoutUMD] = new Tuple<int, string>((int)ExpandedFilterType.UsableWithoutUMD, "Usable without UMD check"),
-        };
+            {
+                [FilterCategories.NoFilter] = new Tuple<int, string>((int)ItemsFilter.FilterType.NoFilter, null),
+                [FilterCategories.Weapon] = new Tuple<int, string>((int)ItemsFilter.FilterType.Weapon, null),
+                [FilterCategories.Armor] = new Tuple<int, string>((int)ItemsFilter.FilterType.Armor, null),
+                [FilterCategories.Accessories] = new Tuple<int, string>((int)ItemsFilter.FilterType.Accessories, null),
+                [FilterCategories.Ingredients] = new Tuple<int, string>((int)ItemsFilter.FilterType.Ingredients, null),
+                [FilterCategories.Usable] = new Tuple<int, string>((int)ItemsFilter.FilterType.Usable, null),
+                [FilterCategories.Notable] = new Tuple<int, string>((int)ItemsFilter.FilterType.Notable, null),
+                [FilterCategories.NonUsable] = new Tuple<int, string>((int)ItemsFilter.FilterType.NonUsable, null),
+                [FilterCategories.QuickslotUtils] = new Tuple<int, string>((int)ExpandedFilterType.QuickslotUtilities, RES.QuickslotUtilitiesText),
+                [FilterCategories.UnlearnedScrolls] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedScrolls, RES.UnlearnedScrollsText),
+                [FilterCategories.UnlearnedRecipes] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedRecipes, RES.UnlearnedRecipesText),
+                [FilterCategories.UnreadDocuments] = new Tuple<int, string>((int)ExpandedFilterType.UnreadDocuments, RES.UnreadDocumentsText),
+                [FilterCategories.UsableWithoutUMD] = new Tuple<int, string>((int)ExpandedFilterType.UsableWithoutUMD, RES.UsableWithoutUMDText),
+            };
 
         public static readonly Dictionary<SorterCategories, Tuple<int, string>> SorterCategoryMap =
             new Dictionary<SorterCategories, Tuple<int, string>>
-        {
-            [SorterCategories.NotSorted]        = new Tuple<int, string>((int)ItemsFilter.SorterType.NotSorted, null),
-            [SorterCategories.TypeUp]           = new Tuple<int, string>((int)ItemsFilter.SorterType.TypeUp, null),
-            [SorterCategories.TypeDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.TypeDown, null),
-            [SorterCategories.PriceUp]          = new Tuple<int, string>((int)ItemsFilter.SorterType.PriceUp, null),
-            [SorterCategories.PriceDown]        = new Tuple<int, string>((int)ItemsFilter.SorterType.PriceDown, null),
-            [SorterCategories.NameUp]           = new Tuple<int, string>((int)ItemsFilter.SorterType.NameUp, null),
-            [SorterCategories.NameDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.NameDown, null),
-            [SorterCategories.DateUp]           = new Tuple<int, string>((int)ItemsFilter.SorterType.DateUp, null),
-            [SorterCategories.DateDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.DateDown, null),
-            [SorterCategories.WeightUp]         = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightUp, null),
-            [SorterCategories.WeightDown]       = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightDown, null),
-            [SorterCategories.WeightValueUp]    = new Tuple<int, string>((int)ExpandedSorterType.WeightValueUp, "Price / Weight (in ascending order)"),
-            [SorterCategories.WeightValueDown]  = new Tuple<int, string>((int)ExpandedSorterType.WeightValueDown, "Price / Weight (in descending order)")
-        };
+            {
+                [SorterCategories.NotSorted] = new Tuple<int, string>((int)ItemsFilter.SorterType.NotSorted, null),
+                [SorterCategories.TypeUp] = new Tuple<int, string>((int)ItemsFilter.SorterType.TypeUp, null),
+                [SorterCategories.TypeDown] = new Tuple<int, string>((int)ItemsFilter.SorterType.TypeDown, null),
+                [SorterCategories.PriceUp] = new Tuple<int, string>((int)ItemsFilter.SorterType.PriceUp, null),
+                [SorterCategories.PriceDown] = new Tuple<int, string>((int)ItemsFilter.SorterType.PriceDown, null),
+                [SorterCategories.NameUp] = new Tuple<int, string>((int)ItemsFilter.SorterType.NameUp, null),
+                [SorterCategories.NameDown] = new Tuple<int, string>((int)ItemsFilter.SorterType.NameDown, null),
+                [SorterCategories.DateUp] = new Tuple<int, string>((int)ItemsFilter.SorterType.DateUp, null),
+                [SorterCategories.DateDown] = new Tuple<int, string>((int)ItemsFilter.SorterType.DateDown, null),
+                [SorterCategories.WeightUp] = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightUp, null),
+                [SorterCategories.WeightDown] = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightDown, null),
+                [SorterCategories.WeightValueUp] = new Tuple<int, string>((int)ExpandedSorterType.WeightValueUp, RES.WeightValueUpText),
+                [SorterCategories.WeightValueDown] = new Tuple<int, string>((int)ExpandedSorterType.WeightValueDown, RES.WeightValueDownText)
+            };
     }
 }

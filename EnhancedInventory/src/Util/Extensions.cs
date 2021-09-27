@@ -10,7 +10,7 @@ namespace EnhancedInventory.Util
             {
                 return "/" + current.name;
             }
-                
+
             return current.parent.GetPath() + "/" + current.name;
         }
     }

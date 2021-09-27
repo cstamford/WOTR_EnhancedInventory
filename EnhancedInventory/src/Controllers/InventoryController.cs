@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using RES = EnhancedInventory.Properties.Resources;
 
 namespace EnhancedInventory.Controllers
 {
@@ -41,7 +42,7 @@ namespace EnhancedInventory.Controllers
         private void Awake()
         {
             m_filter_block = transform.Find(PathToFilterBlock(Type));
-            m_search_bar = new SearchBar(m_filter_block, "Enter item name...");
+            m_search_bar = new SearchBar(m_filter_block, RES.InventorySearchBarText);
 
             m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int _)
             {
@@ -80,9 +81,9 @@ namespace EnhancedInventory.Controllers
 
                         switch (idx)
                         {
-                            case (int)ItemsFilter.FilterType.Ingredients:    localization_enum = ItemsFilter.FilterType.NonUsable; break;
-                            case (int)ItemsFilter.FilterType.Usable:         localization_enum = ItemsFilter.FilterType.Ingredients; break;
-                            case (int)ItemsFilter.FilterType.NonUsable:      localization_enum = ItemsFilter.FilterType.Usable; break;
+                            case (int)ItemsFilter.FilterType.Ingredients: localization_enum = ItemsFilter.FilterType.NonUsable; break;
+                            case (int)ItemsFilter.FilterType.Usable: localization_enum = ItemsFilter.FilterType.Ingredients; break;
+                            case (int)ItemsFilter.FilterType.NonUsable: localization_enum = ItemsFilter.FilterType.Usable; break;
                         }
 
                         text = LocalizedTexts.Instance.ItemsFilter.GetText(localization_enum);
@@ -215,7 +216,7 @@ namespace EnhancedInventory.Controllers
                         else
                         {
                             ToggleWorkaround toggle = switch_bar.transform.GetChild(idx).GetComponent<ToggleWorkaround>();
-                            toggle.onValueChanged.AddListener(delegate (bool on){ if (on) m_search_bar.Dropdown.value = mapped_idx; });
+                            toggle.onValueChanged.AddListener(delegate (bool on) { if (on) m_search_bar.Dropdown.value = mapped_idx; });
                         }
                     }
                 }

@@ -1,20 +1,20 @@
-using Kingmaker.UI.MVVM._PCView.Slots;
-using Owlcat.Runtime.UniRx;
-using UnityEngine;
-using UniRx;
-using UnityEngine.EventSystems;
-using Kingmaker.UI.Common;
-using Kingmaker.UI.MVVM._VM.Slots;
-using UnityEngine.UI;
 using EnhancedInventory.Settings;
+using Kingmaker;
+using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Items.Components;
 using Kingmaker.Items.Parts;
-using Kingmaker.Blueprints;
-using Kingmaker;
-using System.Linq;
-using System;
+using Kingmaker.UI.Common;
 using Kingmaker.UI.MVVM._PCView.Loot;
+using Kingmaker.UI.MVVM._PCView.Slots;
+using Kingmaker.UI.MVVM._VM.Slots;
+using Owlcat.Runtime.UniRx;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using UniRx;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace EnhancedInventory.Controllers
 {

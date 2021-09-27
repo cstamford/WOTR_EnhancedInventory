@@ -160,7 +160,7 @@ namespace EnhancedInventory.Hooks
             else if (expanded_type == ExpandedSorterType.WeightValueDown)
             {
                 items.Sort((ItemEntity a, ItemEntity b) => CompareByWeightValue(a, b, filter));
-                items.Reverse();       
+                items.Reverse();
             }
             else
             {

@@ -17,7 +17,7 @@ namespace EnhancedInventory
         {
             IEnumerable<string> legacy_conflicts = AppDomain.CurrentDomain.GetAssemblies()
                 .Where(i => m_legacy_mods.Any(j => i.FullName.Contains(j))).Select(i => i.FullName);
-            
+
             if (legacy_conflicts.Any())
             {
                 Main.Logger.Error("You have one or more legacy mods running. " +
