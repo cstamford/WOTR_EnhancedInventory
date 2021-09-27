@@ -4,7 +4,6 @@ using Owlcat.Runtime.UI.Controls.Button;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Kingmaker.Blueprints.Root;
 
 namespace EnhancedInventory.Util
 {
