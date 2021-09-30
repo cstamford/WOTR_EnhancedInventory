@@ -8,6 +8,7 @@
         public static string UnlearnedRecipes = "Unlearned recipes";
         public static string UnreadDocuments = "Unread documents";
         public static string UsableWithoutUMDCheck = "Usable without UMD check";
+        public static string CurrentEquippedGear = "Gear for the selected character";
         public static string PriceWeightAscending = "Price / Weight (in ascending order)";
         public static string PriceWeightDescending = "Price / Weight (in descending order)";
     }

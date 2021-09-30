@@ -52,6 +52,7 @@ namespace EnhancedInventory.Settings
         UnlearnedRecipes    = 1 << 9,
         UnreadDocuments     = 1 << 10,
         UsableWithoutUMD    = 1 << 11,
+        CurrentEquipped     = 1 << 12,
 
         Default = Weapon |
             Armor |
@@ -64,7 +65,8 @@ namespace EnhancedInventory.Settings
             UnlearnedScrolls |
             UnlearnedRecipes |
             UnreadDocuments |
-            UsableWithoutUMD
+            UsableWithoutUMD |
+            CurrentEquipped
     }
 
     [Flags]

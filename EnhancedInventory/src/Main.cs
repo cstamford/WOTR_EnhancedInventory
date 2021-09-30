@@ -111,6 +111,7 @@ namespace EnhancedInventory
             [FilterCategories.UnlearnedRecipes] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedRecipes, InventoryStrings.UnlearnedRecipes),
             [FilterCategories.UnreadDocuments]  = new Tuple<int, string>((int)ExpandedFilterType.UnreadDocuments, InventoryStrings.UnreadDocuments),
             [FilterCategories.UsableWithoutUMD] = new Tuple<int, string>((int)ExpandedFilterType.UsableWithoutUMD, InventoryStrings.UsableWithoutUMDCheck),
+            [FilterCategories.CurrentEquipped]  = new Tuple<int, string>((int)ExpandedFilterType.CurrentGear, InventoryStrings.CurrentEquippedGear),
         };
 
         public static readonly Dictionary<SorterCategories, Tuple<int, string>> SorterCategoryMap =
