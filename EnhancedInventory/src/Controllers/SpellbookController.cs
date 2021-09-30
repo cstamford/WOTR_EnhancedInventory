@@ -25,6 +25,8 @@ using Kingmaker.Items;
 using Kingmaker.Blueprints.Items.Components;
 using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Blueprints;
+using Kingmaker.Blueprints.Root;
+using Kingmaker.EntitySystem.Stats;
 
 namespace EnhancedInventory.Controllers
 {
@@ -52,6 +54,10 @@ namespace EnhancedInventory.Controllers
         private ToggleWorkaround m_metamagic_checkbox;
         private Button m_learn_scrolls_button;
 
+        private string m_localized_fort;
+        private string m_localized_reflex;
+        private string m_localized_will;
+
         private List<IDisposable> m_handlers = new List<IDisposable>();
         private bool m_deferred_update = true;
         private int m_last_spell_level = -1;
@@ -66,11 +72,16 @@ namespace EnhancedInventory.Controllers
             m_search_bar.InputField.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
 
             // Setup string options...
+
+            m_localized_fort = LocalizedTexts.Instance.Stats.Entries.First(i => i.Stat == StatType.SaveFortitude).Text;
+            m_localized_reflex = LocalizedTexts.Instance.Stats.Entries.First(i => i.Stat == StatType.SaveReflex).Text;
+            m_localized_will = LocalizedTexts.Instance.Stats.Entries.First(i => i.Stat == StatType.SaveWill).Text;
+
             List<string> options = Enum.GetValues(typeof(SpellbookFilter)).Cast<SpellbookFilter>().Select(i => i.ToString()).ToList();
             options[(int)SpellbookFilter.NoFilter] = "No filter";
-            options[(int)SpellbookFilter.TargetsFortitude] = "Spell targets fortitude";
-            options[(int)SpellbookFilter.TargetsReflex] = "Spell targets reflex";
-            options[(int)SpellbookFilter.TargetsWill] = "Spell targets will";
+            options[(int)SpellbookFilter.TargetsFortitude] = string.Format("Spell targets {0}", m_localized_fort);
+            options[(int)SpellbookFilter.TargetsReflex] = string.Format("Spell targets {0}", m_localized_reflex);
+            options[(int)SpellbookFilter.TargetsWill] = string.Format("Spell targets {0}", m_localized_will);
             m_search_bar.Dropdown.AddOptions(options);
 
             // The scroll bar is used for resetting the scroll.
@@ -113,7 +124,6 @@ namespace EnhancedInventory.Controllers
             m_possible_spells_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
 
             // Move the levels display (which is still used for displaying memorized spells).
-            // Also hide the metamagic option.
             Transform levels = transform.Find("MainContainer/Levels");
             levels.localPosition = new Vector2(400.0f, 385.0f);
 
@@ -232,9 +242,9 @@ namespace EnhancedInventory.Controllers
                 filter == SpellbookFilter.TargetsWill)
             {
                 if (string.IsNullOrWhiteSpace(save)) return false;
-                else if (filter == SpellbookFilter.TargetsFortitude && save.IndexOf("Fortitude", StringComparison.OrdinalIgnoreCase) == -1) return false;
-                else if (filter == SpellbookFilter.TargetsReflex && save.IndexOf("Reflex", StringComparison.OrdinalIgnoreCase) == -1) return false;
-                else if (filter == SpellbookFilter.TargetsWill && save.IndexOf("Will", StringComparison.OrdinalIgnoreCase) == -1) return false;
+                else if (filter == SpellbookFilter.TargetsFortitude && save.IndexOf(m_localized_fort, StringComparison.OrdinalIgnoreCase) == -1) return false;
+                else if (filter == SpellbookFilter.TargetsReflex && save.IndexOf(m_localized_reflex, StringComparison.OrdinalIgnoreCase) == -1) return false;
+                else if (filter == SpellbookFilter.TargetsWill && save.IndexOf(m_localized_will, StringComparison.OrdinalIgnoreCase) == -1) return false;
             }
 
             string text = m_search_bar.InputField.text;
