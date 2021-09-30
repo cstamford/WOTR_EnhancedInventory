@@ -170,6 +170,10 @@ namespace EnhancedInventory
             Main.Settings.SpellbookShowLevelWhenViewingAllSpells = GUILayout.Toggle(Main.Settings.SpellbookShowLevelWhenViewingAllSpells, " Show level of the spell when the spellbook is showing all spell levels");
             GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookAutoSwitchToMetamagicTab = GUILayout.Toggle(Main.Settings.SpellbookAutoSwitchToMetamagicTab, " After creating a metamagic spell, switch to the metamagic tab");
+            GUILayout.EndHorizontal();
+
             GUILayout.Space(4);
 
             GUILayout.BeginHorizontal();

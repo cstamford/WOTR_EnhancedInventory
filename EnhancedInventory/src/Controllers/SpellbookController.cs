@@ -61,6 +61,7 @@ namespace EnhancedInventory.Controllers
 
         private List<IDisposable> m_handlers = new List<IDisposable>();
         private bool m_deferred_update = true;
+
         private int m_last_spell_level = -1;
 
         private void Awake()
@@ -312,7 +313,11 @@ namespace EnhancedInventory.Controllers
                 field.Invoke(spellbook_pc_view.ViewModel.SpellbookMetamagicMixerVM) = delegate
                 {
                     m_deferred_update = true;
-                    old_action();
+
+                    if (Main.Settings.SpellbookAutoSwitchToMetamagicTab)
+                    {
+                        old_action();
+                    }
                 };
             });
 
