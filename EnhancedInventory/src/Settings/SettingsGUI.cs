@@ -45,11 +45,11 @@ namespace EnhancedInventory
             if (!draw_features) return;
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enables all associated inventory features");
+            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enables inventory functionality");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enables all associated spellbook features");
+            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enables spellbook functionality");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
