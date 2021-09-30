@@ -53,7 +53,7 @@ namespace EnhancedInventory.Hooks
                     (blueprint.Type == UsableItemType.Scroll || blueprint.Type == UsableItemType.Wand) &&
                     unit != null && !blueprint.IsUnitNeedUMDForUse(unit);
             }
-            else if (expanded_filter == ExpandedFilterType.CurrentGear)
+            else if (expanded_filter == ExpandedFilterType.CurrentEquipped)
             {
                 UnitEntityData unit = UIUtility.GetCurrentCharacter();
                 __result = unit != null;
@@ -73,6 +73,10 @@ namespace EnhancedInventory.Hooks
 
                     __result = weapon_match || shield_match || armour_match;
                 }
+            }
+            else if (expanded_filter == ExpandedFilterType.NonZeroPW)
+            {
+                __result = item.Blueprint.SellPrice != 0 && item.Blueprint.Weight != 0;
             }
             else
             {
