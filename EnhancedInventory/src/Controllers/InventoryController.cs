@@ -93,6 +93,7 @@ namespace EnhancedInventory.Controllers
             }
 
             m_search_bar.Dropdown.AddOptions(options);
+            m_search_bar.UpdatePlaceholder();
 
             // Gather images for the dropdown...
 

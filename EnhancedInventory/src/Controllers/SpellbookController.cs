@@ -84,6 +84,7 @@ namespace EnhancedInventory.Controllers
             options[(int)SpellbookFilter.TargetsReflex] = string.Format(SpellbookStrings.FilterTargets, m_localized_reflex);
             options[(int)SpellbookFilter.TargetsWill] = string.Format(SpellbookStrings.FilterTargets, m_localized_will);
             m_search_bar.Dropdown.AddOptions(options);
+            m_search_bar.UpdatePlaceholder();
 
             // The scroll bar is used for resetting the scroll.
             m_scroll_bar = transform.Find("MainContainer/KnownSpells/StandardScrollView").GetComponent<ScrollRectExtended>();
