@@ -1,7 +1,6 @@
 ﻿using EnhancedInventory.Controllers;
 using Kingmaker;
 using Kingmaker.PubSubSystem;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,25 +37,25 @@ namespace EnhancedInventory.Events
         public void OnAreaBeginUnloading()
         { }
 
-        private readonly Tuple<string, InventoryType>[] m_inventory_paths = new Tuple<string, InventoryType>[]
+        private readonly (string, InventoryType)[] m_inventory_paths = new (string, InventoryType)[]
         {
             // Regular, in-game inventory.
-            new Tuple<string, InventoryType>("ServiceWindowsPCView/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
+            ("ServiceWindowsPCView/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
 
             // World map inventory.
-            new Tuple<string, InventoryType>("ServiceWindowsConfig/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
+            ("ServiceWindowsConfig/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
 
             // Vendor screen: PC inventory view.
-            new Tuple<string, InventoryType>("VendorPCView/MainContent/PlayerStash", InventoryType.InventoryStash),
+            ("VendorPCView/MainContent/PlayerStash", InventoryType.InventoryStash),
 
             // Vendor screen: Vendor goods view.
-            new Tuple<string, InventoryType>("VendorPCView/MainContent/VendorBlock", InventoryType.Vendor),
+            ("VendorPCView/MainContent/VendorBlock", InventoryType.Vendor),
 
             // Shared stash: PC inventory view.
-            new Tuple<string, InventoryType>("LootPCView/Window/Inventory", InventoryType.LootInventoryStash),
+            ("LootPCView/Window/Inventory", InventoryType.LootInventoryStash),
 
             // Shared stash: Stash items view.
-            new Tuple<string, InventoryType>("LootPCView/Window/Collector", InventoryType.LootCollector),
+            ("LootPCView/Window/Collector", InventoryType.LootCollector),
         };
 
         private void LoadInventorySearchBar()

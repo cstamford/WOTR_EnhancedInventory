@@ -5,7 +5,6 @@ using EnhancedInventory.Util;
 using HarmonyLib;
 using Kingmaker.PubSubSystem;
 using Kingmaker.UI.Common;
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -95,42 +94,40 @@ namespace EnhancedInventory
             }
         }
 
-        public static readonly Dictionary<FilterCategories, Tuple<int, string>> FilterCategoryMap =
-            new Dictionary<FilterCategories, Tuple<int, string>>
+        public static readonly Dictionary<FilterCategories, (int, string)> FilterCategoryMap = new Dictionary<FilterCategories, (int, string)>
         {
-            [FilterCategories.NoFilter]         = new Tuple<int, string>((int)ItemsFilter.FilterType.NoFilter, null),
-            [FilterCategories.Weapon]           = new Tuple<int, string>((int)ItemsFilter.FilterType.Weapon, null),
-            [FilterCategories.Armor]            = new Tuple<int, string>((int)ItemsFilter.FilterType.Armor, null),
-            [FilterCategories.Accessories]      = new Tuple<int, string>((int)ItemsFilter.FilterType.Accessories, null),
-            [FilterCategories.Ingredients]      = new Tuple<int, string>((int)ItemsFilter.FilterType.Ingredients, null),
-            [FilterCategories.Usable]           = new Tuple<int, string>((int)ItemsFilter.FilterType.Usable, null),
-            [FilterCategories.Notable]          = new Tuple<int, string>((int)ItemsFilter.FilterType.Notable, null),
-            [FilterCategories.NonUsable]        = new Tuple<int, string>((int)ItemsFilter.FilterType.NonUsable, null),
-            [FilterCategories.QuickslotUtils]   = new Tuple<int, string>((int)ExpandedFilterType.QuickslotUtilities, InventoryStrings.QuickslotUtilities),
-            [FilterCategories.UnlearnedScrolls] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedScrolls, InventoryStrings.UnlearnedScrolls),
-            [FilterCategories.UnlearnedRecipes] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedRecipes, InventoryStrings.UnlearnedRecipes),
-            [FilterCategories.UnreadDocuments]  = new Tuple<int, string>((int)ExpandedFilterType.UnreadDocuments, InventoryStrings.UnreadDocuments),
-            [FilterCategories.UsableWithoutUMD] = new Tuple<int, string>((int)ExpandedFilterType.UsableWithoutUMD, InventoryStrings.UsableWithoutUMDCheck),
-            [FilterCategories.CurrentEquipped]  = new Tuple<int, string>((int)ExpandedFilterType.CurrentEquipped, InventoryStrings.CurrentEquipped),
-            [FilterCategories.NonZeroPW]        = new Tuple<int, string>((int)ExpandedFilterType.NonZeroPW, InventoryStrings.NonZeroPW),
+            [FilterCategories.NoFilter]         = ((int)ItemsFilter.FilterType.NoFilter, null),
+            [FilterCategories.Weapon]           = ((int)ItemsFilter.FilterType.Weapon, null),
+            [FilterCategories.Armor]            = ((int)ItemsFilter.FilterType.Armor, null),
+            [FilterCategories.Accessories]      = ((int)ItemsFilter.FilterType.Accessories, null),
+            [FilterCategories.Ingredients]      = ((int)ItemsFilter.FilterType.Ingredients, null),
+            [FilterCategories.Usable]           = ((int)ItemsFilter.FilterType.Usable, null),
+            [FilterCategories.Notable]          = ((int)ItemsFilter.FilterType.Notable, null),
+            [FilterCategories.NonUsable]        = ((int)ItemsFilter.FilterType.NonUsable, null),
+            [FilterCategories.QuickslotUtils]   = ((int)ExpandedFilterType.QuickslotUtilities, InventoryStrings.QuickslotUtilities),
+            [FilterCategories.UnlearnedScrolls] = ((int)ExpandedFilterType.UnlearnedScrolls, InventoryStrings.UnlearnedScrolls),
+            [FilterCategories.UnlearnedRecipes] = ((int)ExpandedFilterType.UnlearnedRecipes, InventoryStrings.UnlearnedRecipes),
+            [FilterCategories.UnreadDocuments]  = ((int)ExpandedFilterType.UnreadDocuments, InventoryStrings.UnreadDocuments),
+            [FilterCategories.UsableWithoutUMD] = ((int)ExpandedFilterType.UsableWithoutUMD, InventoryStrings.UsableWithoutUMDCheck),
+            [FilterCategories.CurrentEquipped]  = ((int)ExpandedFilterType.CurrentEquipped, InventoryStrings.CurrentEquipped),
+            [FilterCategories.NonZeroPW]        = ((int)ExpandedFilterType.NonZeroPW, InventoryStrings.NonZeroPW),
         };
 
-        public static readonly Dictionary<SorterCategories, Tuple<int, string>> SorterCategoryMap =
-            new Dictionary<SorterCategories, Tuple<int, string>>
+        public static readonly Dictionary<SorterCategories, (int, string)> SorterCategoryMap = new Dictionary<SorterCategories, (int, string)>
         {
-            [SorterCategories.NotSorted]        = new Tuple<int, string>((int)ItemsFilter.SorterType.NotSorted, null),
-            [SorterCategories.TypeUp]           = new Tuple<int, string>((int)ItemsFilter.SorterType.TypeUp, null),
-            [SorterCategories.TypeDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.TypeDown, null),
-            [SorterCategories.PriceUp]          = new Tuple<int, string>((int)ItemsFilter.SorterType.PriceUp, null),
-            [SorterCategories.PriceDown]        = new Tuple<int, string>((int)ItemsFilter.SorterType.PriceDown, null),
-            [SorterCategories.NameUp]           = new Tuple<int, string>((int)ItemsFilter.SorterType.NameUp, null),
-            [SorterCategories.NameDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.NameDown, null),
-            [SorterCategories.DateUp]           = new Tuple<int, string>((int)ItemsFilter.SorterType.DateUp, null),
-            [SorterCategories.DateDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.DateDown, null),
-            [SorterCategories.WeightUp]         = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightUp, null),
-            [SorterCategories.WeightDown]       = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightDown, null),
-            [SorterCategories.WeightValueUp]    = new Tuple<int, string>((int)ExpandedSorterType.WeightValueUp, InventoryStrings.PriceWeightAscending),
-            [SorterCategories.WeightValueDown]  = new Tuple<int, string>((int)ExpandedSorterType.WeightValueDown, InventoryStrings.PriceWeightDescending)
+            [SorterCategories.NotSorted]        = ((int)ItemsFilter.SorterType.NotSorted, null),
+            [SorterCategories.TypeUp]           = ((int)ItemsFilter.SorterType.TypeUp, null),
+            [SorterCategories.TypeDown]         = ((int)ItemsFilter.SorterType.TypeDown, null),
+            [SorterCategories.PriceUp]          = ((int)ItemsFilter.SorterType.PriceUp, null),
+            [SorterCategories.PriceDown]        = ((int)ItemsFilter.SorterType.PriceDown, null),
+            [SorterCategories.NameUp]           = ((int)ItemsFilter.SorterType.NameUp, null),
+            [SorterCategories.NameDown]         = ((int)ItemsFilter.SorterType.NameDown, null),
+            [SorterCategories.DateUp]           = ((int)ItemsFilter.SorterType.DateUp, null),
+            [SorterCategories.DateDown]         = ((int)ItemsFilter.SorterType.DateDown, null),
+            [SorterCategories.WeightUp]         = ((int)ItemsFilter.SorterType.WeightUp, null),
+            [SorterCategories.WeightDown]       = ((int)ItemsFilter.SorterType.WeightDown, null),
+            [SorterCategories.WeightValueUp]    = ((int)ExpandedSorterType.WeightValueUp, InventoryStrings.PriceWeightAscending),
+            [SorterCategories.WeightValueDown]  = ((int)ExpandedSorterType.WeightValueDown, InventoryStrings.PriceWeightDescending)
         };
     }
 }

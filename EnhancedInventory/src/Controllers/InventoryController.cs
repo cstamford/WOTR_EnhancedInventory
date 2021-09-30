@@ -85,7 +85,7 @@ namespace EnhancedInventory.Controllers
                         }
 
                         text = LocalizedTexts.Instance.ItemsFilter.GetText(localization_enum);
-                        Main.FilterCategoryMap[flag] = new Tuple<int, string>(idx, text);
+                        Main.FilterCategoryMap[flag] = (idx, text);
                     }
 
                     options.Add(text);

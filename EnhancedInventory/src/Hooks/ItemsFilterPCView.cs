@@ -68,7 +68,7 @@ namespace EnhancedInventory.Hooks
                     if (text == null)
                     {
                         text = LocalizedTexts.Instance.ItemsFilter.GetText((ItemsFilter.SorterType)idx);
-                        Main.SorterCategoryMap[flag] = new Tuple<int, string>(idx, text);
+                        Main.SorterCategoryMap[flag] = (idx, text);
                     }
 
                     options.Add(text);
