@@ -64,7 +64,7 @@ namespace EnhancedInventory
         private static void DrawInventorySearchBarOptions()
         {
             GUILayout.BeginHorizontal();
-            bool draw_search_bar = FeatureButton("Inventory Search Bar");
+            bool draw_search_bar = FeatureButton("Inventory");
             GUILayout.EndHorizontal();
 
             if (!draw_search_bar) return;
@@ -145,7 +145,7 @@ namespace EnhancedInventory
         private static void DrawSpellbookSearchBarOptions()
         {
             GUILayout.BeginHorizontal();
-            bool draw_search_bar = FeatureButton("Spellbook Search Bar");
+            bool draw_search_bar = FeatureButton("Spellbook");
             GUILayout.EndHorizontal();
 
             if (!draw_search_bar) return;
