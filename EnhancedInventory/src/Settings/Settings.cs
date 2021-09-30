@@ -103,6 +103,7 @@ namespace EnhancedInventory.Settings
         public bool EnableSpellbookSearchBar = true;
         public bool EnableHighlightableLoot = true;
         public bool EnableVisualOverhaulSorting = true;
+        public bool EnableCollectAllTweaks = false;
 
         public bool InventorySearchBarResetFilterWhenOpening = false;
         public bool InventorySearchBarFocusWhenOpening = true;
@@ -115,6 +116,12 @@ namespace EnhancedInventory.Settings
         public bool SpellbookShowEmptyMetamagicCircles = false;
         public bool SpellbookShowLevelWhenViewingAllSpells = true;
         public bool SpellbookAutoSwitchToMetamagicTab = false;
+
+        public bool CollectAllZeroWeightItems = true;
+        public bool CollectAllUnidentifiedItems = true;
+        public bool CollectAllUsefulItems = true;
+        public bool CollectAllWeightValue = true;
+        public float CollectAllWeightValueCutoff = 10.0f;
 
         public InventorySearchCriteria InventorySearchCriteria = InventorySearchCriteria.Default;
         public SpellbookSearchCriteria SpellbookSearchCriteria = SpellbookSearchCriteria.Default;
