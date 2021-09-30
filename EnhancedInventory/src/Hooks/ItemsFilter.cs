@@ -76,7 +76,7 @@ namespace EnhancedInventory.Hooks
             }
             else if (expanded_filter == ExpandedFilterType.NonZeroPW)
             {
-                __result = item.Blueprint.SellPrice != 0 && item.Blueprint.Weight != 0;
+                __result = item.Blueprint.SellPrice > 0 && item.Blueprint.Weight > 0.0f;
             }
             else
             {
