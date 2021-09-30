@@ -1,4 +1,4 @@
-
+using EnhancedInventory.Localization;
 using EnhancedInventory.Settings;
 using EnhancedInventory.Util;
 using Kingmaker;
@@ -8,7 +8,6 @@ using Kingmaker.UI.Common;
 using Kingmaker.UI.MVVM._PCView.Loot;
 using Kingmaker.UI.MVVM._PCView.ServiceWindows.Inventory;
 using Kingmaker.UI.MVVM._PCView.Vendor;
-using Kingmaker.UnitLogic;
 using System;
 using System.Collections.Generic;
 using UniRx;
@@ -41,25 +40,25 @@ namespace EnhancedInventory.Controllers
         private void Awake()
         {
             m_filter_block = transform.Find(PathToFilterBlock(Type));
-            m_search_bar = new SearchBar(m_filter_block, "Enter item name...");
+            m_search_bar = new SearchBar(m_filter_block, InventoryStrings.EnterItemName);
 
-            m_search_bar.Dropdown.onValueChanged.AddListener(delegate (int _)
+            m_search_bar.Dropdown.onValueChanged.AddListener(delegate
             {
                 UpdateDropdownIcon();
                 m_deferred_update = true;
             });
 
-            m_search_bar.InputField.onValueChanged.AddListener(delegate (string _) { m_deferred_update = true; });
+            m_search_bar.InputField.onValueChanged.AddListener(delegate { m_deferred_update = true; });
 
             if (Main.Settings.InventorySearchBarScrollResetOnSubmit)
             {
-                m_search_bar.InputField.onSubmit.AddListener(delegate (string _)
+                m_search_bar.InputField.onSubmit.AddListener(delegate
                 {
                     transform.Find(PathToStashScroll(Type)).GetComponent<Scrollbar>().value = 0.0f;
                 });
             }
 
-            m_char_selection_changed_cb = Game.Instance.SelectionCharacter.SelectedUnit.Subscribe(delegate (UnitDescriptor _) { m_deferred_update = true; });
+            m_char_selection_changed_cb = Game.Instance.SelectionCharacter.SelectedUnit.Subscribe(delegate { m_deferred_update = true; });
 
             // Add options to the dropdown...
 
@@ -169,33 +168,33 @@ namespace EnhancedInventory.Controllers
                 {
                     InventoryStashPCView stash_pc_view = GetComponentInParent<InventoryStashPCView>();
                     m_active_filter = stash_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                    stash_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; });
-                    stash_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                    stash_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate { m_deferred_update = true; });
+                    stash_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate { m_deferred_update = true; });
                 }
                 else if (Type == InventoryType.Vendor)
                 {
                     VendorPCView vendor_pc_view = GetComponentInParent<VendorPCView>();
                     m_active_filter = vendor_pc_view.ViewModel.VendorItemsFilter.CurrentFilter;
-                    vendor_pc_view.ViewModel.VendorSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; });
-                    vendor_pc_view.ViewModel.VendorItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                    vendor_pc_view.ViewModel.VendorSlotsGroup.CollectionChangedCommand.Subscribe(delegate { m_deferred_update = true; });
+                    vendor_pc_view.ViewModel.VendorItemsFilter.CurrentSorter.Subscribe(delegate { m_deferred_update = true; });
                 }
                 else if (Type == InventoryType.LootCollector)
                 {
                     LootCollectorPCView collector_pc_view = GetComponent<LootCollectorPCView>();
                     m_active_filter = collector_pc_view.ViewModel.ItemsFilter?.CurrentFilter;
-                    collector_pc_view.ViewModel.CollectionChangedCommand.Subscribe(delegate (Unit _) { m_deferred_update = true; });
+                    collector_pc_view.ViewModel.CollectionChangedCommand.Subscribe(delegate { m_deferred_update = true; });
 
                     if (m_active_filter != null) // can be null if not on stash view
                     {
-                        collector_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                        collector_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate { m_deferred_update = true; });
                     }
                 }
                 else if (Type == InventoryType.LootInventoryStash)
                 {
                     LootInventoryStashPCView inventory_pc_view = GetComponentInParent<LootInventoryStashPCView>();
                     m_active_filter = inventory_pc_view.ViewModel.ItemsFilter.CurrentFilter;
-                    inventory_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; });
-                    inventory_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; });
+                    inventory_pc_view.ViewModel.ItemSlotsGroup.CollectionChangedCommand.Subscribe(delegate { m_deferred_update = true; });
+                    inventory_pc_view.ViewModel.ItemsFilter.CurrentSorter.Subscribe(delegate { m_deferred_update = true; });
                 }
 
                 Transform switch_bar = m_filter_block.Find("SwitchBar");
@@ -215,7 +214,7 @@ namespace EnhancedInventory.Controllers
                         else
                         {
                             ToggleWorkaround toggle = switch_bar.transform.GetChild(idx).GetComponent<ToggleWorkaround>();
-                            toggle.onValueChanged.AddListener(delegate (bool on){ if (on) m_search_bar.Dropdown.value = mapped_idx; });
+                            toggle.onValueChanged.AddListener(delegate (bool on) { if (on) m_search_bar.Dropdown.value = mapped_idx; });
                         }
                     }
                 }

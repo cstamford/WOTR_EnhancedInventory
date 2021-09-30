@@ -1,4 +1,5 @@
 using EnhancedInventory.Events;
+using EnhancedInventory.Localization;
 using EnhancedInventory.Settings;
 using EnhancedInventory.Util;
 using HarmonyLib;
@@ -105,11 +106,11 @@ namespace EnhancedInventory
             [FilterCategories.Usable]           = new Tuple<int, string>((int)ItemsFilter.FilterType.Usable, null),
             [FilterCategories.Notable]          = new Tuple<int, string>((int)ItemsFilter.FilterType.Notable, null),
             [FilterCategories.NonUsable]        = new Tuple<int, string>((int)ItemsFilter.FilterType.NonUsable, null),
-            [FilterCategories.QuickslotUtils]   = new Tuple<int, string>((int)ExpandedFilterType.QuickslotUtilities, "Quickslot utilities"),
-            [FilterCategories.UnlearnedScrolls] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedScrolls, "Unlearned scrolls"),
-            [FilterCategories.UnlearnedRecipes] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedRecipes, "Unlearned recipes"),
-            [FilterCategories.UnreadDocuments]  = new Tuple<int, string>((int)ExpandedFilterType.UnreadDocuments, "Unread documents"),
-            [FilterCategories.UsableWithoutUMD] = new Tuple<int, string>((int)ExpandedFilterType.UsableWithoutUMD, "Usable without UMD check"),
+            [FilterCategories.QuickslotUtils]   = new Tuple<int, string>((int)ExpandedFilterType.QuickslotUtilities, InventoryStrings.QuickslotUtilities),
+            [FilterCategories.UnlearnedScrolls] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedScrolls, InventoryStrings.UnlearnedScrolls),
+            [FilterCategories.UnlearnedRecipes] = new Tuple<int, string>((int)ExpandedFilterType.UnlearnedRecipes, InventoryStrings.UnlearnedRecipes),
+            [FilterCategories.UnreadDocuments]  = new Tuple<int, string>((int)ExpandedFilterType.UnreadDocuments, InventoryStrings.UnreadDocuments),
+            [FilterCategories.UsableWithoutUMD] = new Tuple<int, string>((int)ExpandedFilterType.UsableWithoutUMD, InventoryStrings.UsableWithoutUMDCheck),
         };
 
         public static readonly Dictionary<SorterCategories, Tuple<int, string>> SorterCategoryMap =
@@ -126,8 +127,8 @@ namespace EnhancedInventory
             [SorterCategories.DateDown]         = new Tuple<int, string>((int)ItemsFilter.SorterType.DateDown, null),
             [SorterCategories.WeightUp]         = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightUp, null),
             [SorterCategories.WeightDown]       = new Tuple<int, string>((int)ItemsFilter.SorterType.WeightDown, null),
-            [SorterCategories.WeightValueUp]    = new Tuple<int, string>((int)ExpandedSorterType.WeightValueUp, "Price / Weight (in ascending order)"),
-            [SorterCategories.WeightValueDown]  = new Tuple<int, string>((int)ExpandedSorterType.WeightValueDown, "Price / Weight (in descending order)")
+            [SorterCategories.WeightValueUp]    = new Tuple<int, string>((int)ExpandedSorterType.WeightValueUp, InventoryStrings.PriceWeightAscending),
+            [SorterCategories.WeightValueDown]  = new Tuple<int, string>((int)ExpandedSorterType.WeightValueDown, InventoryStrings.PriceWeightDescending)
         };
     }
 }

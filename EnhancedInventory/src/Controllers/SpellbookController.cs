@@ -27,6 +27,7 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.EntitySystem.Stats;
+using EnhancedInventory.Localization;
 
 namespace EnhancedInventory.Controllers
 {
@@ -64,7 +65,7 @@ namespace EnhancedInventory.Controllers
 
         private void Awake()
         {
-            m_search_bar = new SearchBar(transform.Find("MainContainer"), "Enter spell name...");
+            m_search_bar = new SearchBar(transform.Find("MainContainer"), SpellbookStrings.EnterSpellName);
             m_search_bar.GameObject.transform.localScale = new Vector3(0.85f, 0.85f, 1.0f);
             m_search_bar.GameObject.transform.localPosition = new Vector2(-61.0f, 386.0f);
             m_search_bar.DropdownIconObject.SetActive(false);
@@ -78,10 +79,10 @@ namespace EnhancedInventory.Controllers
             m_localized_will = LocalizedTexts.Instance.Stats.Entries.First(i => i.Stat == StatType.SaveWill).Text;
 
             List<string> options = Enum.GetValues(typeof(SpellbookFilter)).Cast<SpellbookFilter>().Select(i => i.ToString()).ToList();
-            options[(int)SpellbookFilter.NoFilter] = "No filter";
-            options[(int)SpellbookFilter.TargetsFortitude] = string.Format("Spell targets {0}", m_localized_fort);
-            options[(int)SpellbookFilter.TargetsReflex] = string.Format("Spell targets {0}", m_localized_reflex);
-            options[(int)SpellbookFilter.TargetsWill] = string.Format("Spell targets {0}", m_localized_will);
+            options[(int)SpellbookFilter.NoFilter] = SpellbookStrings.NoFilter;
+            options[(int)SpellbookFilter.TargetsFortitude] = string.Format(SpellbookStrings.FilterTargets, m_localized_fort);
+            options[(int)SpellbookFilter.TargetsReflex] = string.Format(SpellbookStrings.FilterTargets, m_localized_reflex);
+            options[(int)SpellbookFilter.TargetsWill] = string.Format(SpellbookStrings.FilterTargets, m_localized_will);
             m_search_bar.Dropdown.AddOptions(options);
 
             // The scroll bar is used for resetting the scroll.
@@ -103,7 +104,7 @@ namespace EnhancedInventory.Controllers
             GameObject all_spells_button = Instantiate(transform.Find("MainContainer/KnownSpells/Toggle").gameObject, transform.Find("MainContainer/KnownSpells"));
             all_spells_button.name = "ToggleAllSpells";
             all_spells_button.transform.localPosition = new Vector2(501.0f, -405.0f);
-            all_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show all spell levels";
+            all_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = SpellbookStrings.ShowAllSpellLevels;
             m_all_spells_checkbox = all_spells_button.GetComponent<ToggleWorkaround>();
             m_all_spells_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
             m_all_spells_checkbox.isOn = Main.Settings.SpellbookShowAllSpellsByDefault;
@@ -111,7 +112,7 @@ namespace EnhancedInventory.Controllers
             GameObject metamagic_button = Instantiate(transform.Find("MainContainer/KnownSpells/Toggle").gameObject, transform.Find("MainContainer/KnownSpells"));
             metamagic_button.name = "ToggleMetamagic";
             metamagic_button.transform.localPosition = new Vector2(501.0f, -480.0f);
-            metamagic_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show metamagic";
+            metamagic_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = SpellbookStrings.ShowMetamagic;
             m_metamagic_checkbox = metamagic_button.GetComponent<ToggleWorkaround>();
             m_metamagic_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
             m_metamagic_checkbox.isOn = Main.Settings.SpellbookShowMetamagicByDefault;
@@ -119,7 +120,7 @@ namespace EnhancedInventory.Controllers
             GameObject possible_spells_button = transform.Find("MainContainer/KnownSpells/Toggle").gameObject;
             possible_spells_button.name = "TogglePossibleSpells";
             possible_spells_button.transform.localPosition = new Vector2(501.0f, -443.0f);
-            possible_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = "Show unlearned spells";
+            possible_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = SpellbookStrings.ShowUnlearnedSpells;
             m_possible_spells_checkbox = possible_spells_button.GetComponent<ToggleWorkaround>();
             m_possible_spells_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
 
@@ -407,7 +408,8 @@ namespace EnhancedInventory.Controllers
         {
             List<ItemEntity> learnable_scrolls = GetLearnableScrolls();
             m_learn_scrolls_button.interactable = learnable_scrolls.Count > 0;
-            m_learn_scrolls_button.transform.Find("MenuTitle").GetComponent<TextMeshProUGUI>().text = $"Learn {learnable_scrolls.Count} scrolls";
+            TextMeshProUGUI title_text = m_learn_scrolls_button.transform.Find("MenuTitle").GetComponent<TextMeshProUGUI>();
+            title_text.text = string.Format(SpellbookStrings.LearnScrolls, learnable_scrolls.Count);
         }
     }
 }
