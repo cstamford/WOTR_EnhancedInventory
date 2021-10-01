@@ -62,6 +62,11 @@ namespace EnhancedInventory.Util
             OnInputClick();
         }
 
+        public void UpdatePlaceholder()
+        {
+            PlaceholderText.text = string.IsNullOrEmpty(InputField.text) ? Dropdown.options[Dropdown.value].text : InputField.text;
+        }
+
         private void OnDropdownButton()
         {
             Dropdown.Show();
@@ -94,11 +99,6 @@ namespace EnhancedInventory.Util
             {
                 EventSystem.current.SetSelectedGameObject(GameObject); // return focus to regular UI
             }
-        }
-
-        private void UpdatePlaceholder()
-        {
-            PlaceholderText.text = string.IsNullOrEmpty(InputField.text) ? Dropdown.options[Dropdown.value].text : InputField.text;
         }
     }
 }

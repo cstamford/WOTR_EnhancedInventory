@@ -33,6 +33,12 @@ namespace EnhancedInventory
                 GUILayout.Space(12);
             }
 
+            if (Main.Settings.EnableCollectAllTweaks)
+            {
+                DrawCollectAllOptions();
+                GUILayout.Space(12);
+            }
+
             DrawSortingCategories();
         }
 
@@ -45,11 +51,11 @@ namespace EnhancedInventory
             if (!draw_features) return;
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enables all associated inventory features");
+            Main.Settings.EnableInventorySearchBar = GUILayout.Toggle(Main.Settings.EnableInventorySearchBar, " Enables inventory functionality");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
-            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enables all associated spellbook features");
+            Main.Settings.EnableSpellbookSearchBar = GUILayout.Toggle(Main.Settings.EnableSpellbookSearchBar, " Enables spellbook functionality");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -59,12 +65,16 @@ namespace EnhancedInventory
             GUILayout.BeginHorizontal();
             Main.Settings.EnableVisualOverhaulSorting = GUILayout.Toggle(Main.Settings.EnableVisualOverhaulSorting, " Overhaul the visuals of the sort menu");
             GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.EnableCollectAllTweaks = GUILayout.Toggle(Main.Settings.EnableCollectAllTweaks, " Tweak the behaviour of the Collect All button");
+            GUILayout.EndHorizontal();
         }
 
         private static void DrawInventorySearchBarOptions()
         {
             GUILayout.BeginHorizontal();
-            bool draw_search_bar = FeatureButton("Inventory Search Bar");
+            bool draw_search_bar = FeatureButton("Inventory");
             GUILayout.EndHorizontal();
 
             if (!draw_search_bar) return;
@@ -145,7 +155,7 @@ namespace EnhancedInventory
         private static void DrawSpellbookSearchBarOptions()
         {
             GUILayout.BeginHorizontal();
-            bool draw_search_bar = FeatureButton("Spellbook Search Bar");
+            bool draw_search_bar = FeatureButton("Spellbook");
             GUILayout.EndHorizontal();
 
             if (!draw_search_bar) return;
@@ -168,6 +178,10 @@ namespace EnhancedInventory
 
             GUILayout.BeginHorizontal();
             Main.Settings.SpellbookShowLevelWhenViewingAllSpells = GUILayout.Toggle(Main.Settings.SpellbookShowLevelWhenViewingAllSpells, " Show level of the spell when the spellbook is showing all spell levels");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.SpellbookAutoSwitchToMetamagicTab = GUILayout.Toggle(Main.Settings.SpellbookAutoSwitchToMetamagicTab, " After creating a metamagic spell, switch to the metamagic tab");
             GUILayout.EndHorizontal();
 
             GUILayout.Space(4);
@@ -198,6 +212,37 @@ namespace EnhancedInventory
 
                 GUILayout.Space(4);
             }
+        }
+
+        private static void DrawCollectAllOptions()
+        {
+            GUILayout.BeginHorizontal();
+            bool draw_collect_all = FeatureButton("Collect All Tweaks");
+            GUILayout.EndHorizontal();
+
+            if (!draw_collect_all) return;
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.CollectAllZeroWeightItems = GUILayout.Toggle(Main.Settings.CollectAllZeroWeightItems, " Collect all zero-weight items");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.CollectAllUnidentifiedItems = GUILayout.Toggle(Main.Settings.CollectAllUnidentifiedItems, " Collect all unidentified items");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.CollectAllUsefulItems = GUILayout.Toggle(Main.Settings.CollectAllUsefulItems, " Collect all useful (unlearned scrolls/recipes, unread books) items");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            Main.Settings.CollectAllWeightValue = GUILayout.Toggle(Main.Settings.CollectAllWeightValue, " Use price / weight cutoff for loot (10 = masterwork weapon) ");
+            string cutoff = GUILayout.TextField(Main.Settings.CollectAllWeightValueCutoff.ToString(), GUILayout.MinWidth(30));
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+
+            float cutoff_float = 0.0f;
+            float.TryParse(cutoff, out cutoff_float);
+            Main.Settings.CollectAllWeightValueCutoff = cutoff_float;
         }
 
         private static void DrawHighlightableLootOptions()

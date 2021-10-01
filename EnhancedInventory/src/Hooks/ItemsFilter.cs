@@ -53,6 +53,31 @@ namespace EnhancedInventory.Hooks
                     (blueprint.Type == UsableItemType.Scroll || blueprint.Type == UsableItemType.Wand) &&
                     unit != null && !blueprint.IsUnitNeedUMDForUse(unit);
             }
+            else if (expanded_filter == ExpandedFilterType.CurrentEquipped)
+            {
+                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                __result = unit != null;
+
+                if (__result)
+                {
+                    bool weapon_match = item is ItemEntityWeapon weapon &&
+                        ((unit.Body.PrimaryHand.HasWeapon && unit.Body.PrimaryHand.Weapon.Blueprint.Type == weapon.Blueprint.Type) ||
+                        (unit.Body.SecondaryHand.HasWeapon && unit.Body.SecondaryHand.Weapon.Blueprint.Type == weapon.Blueprint.Type));
+
+                    bool shield_match = item is ItemEntityShield shield &&
+                        ((unit.Body.PrimaryHand.HasShield && unit.Body.PrimaryHand.Shield.Blueprint.Type == shield.Blueprint.Type) ||
+                        (unit.Body.SecondaryHand.HasShield && unit.Body.SecondaryHand.Shield.Blueprint.Type == shield.Blueprint.Type));
+
+                    bool armour_match = item is ItemEntityArmor armor &&
+                        unit.Body.Armor.HasArmor && unit.Body.Armor.Armor.Blueprint.ProficiencyGroup == armor.Blueprint.ProficiencyGroup;
+
+                    __result = weapon_match || shield_match || armour_match;
+                }
+            }
+            else if (expanded_filter == ExpandedFilterType.NonZeroPW)
+            {
+                __result = item.Blueprint.SellPrice > 0 && item.Blueprint.Weight > 0.0f;
+            }
             else
             {
                 // Original call - proceed as normal.

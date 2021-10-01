@@ -12,6 +12,8 @@ namespace EnhancedInventory.Util
         UnlearnedRecipes = 10,
         UnreadDocuments = 11,
         UsableWithoutUMD = 12,
+        CurrentEquipped = 13,
+        NonZeroPW = 14,
     }
 
     public enum ExpandedSorterType
