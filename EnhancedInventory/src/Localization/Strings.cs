@@ -1,27 +1,29 @@
-﻿namespace EnhancedInventory.Localization
+﻿using RES = EnhancedInventory.Properties.Resources;
+
+namespace EnhancedInventory.Localization
 {
     public static class InventoryStrings
     {
-        public static string EnterItemName = "Enter item name...";
-        public static string QuickslotUtilities = "Quickslot utilities";
-        public static string UnlearnedScrolls = "Unlearned scrolls";
-        public static string UnlearnedRecipes = "Unlearned recipes";
-        public static string UnreadDocuments = "Unread documents";
-        public static string UsableWithoutUMDCheck = "Usable without UMD check";
-        public static string CurrentEquipped = "Gear for the selected character";
-        public static string NonZeroPW = "Non-zero price and weight";
-        public static string PriceWeightAscending = "Price / Weight (in ascending order)";
-        public static string PriceWeightDescending = "Price / Weight (in descending order)";
+        public static string EnterItemName = RES.InventorySearchBarText;
+        public static string QuickslotUtilities = RES.InventoryQuickslotUtilitiesText;
+        public static string UnlearnedScrolls = RES.InventoryUnlearnedScrollsText;
+        public static string UnlearnedRecipes = RES.InventoryUnlearnedRecipesText;
+        public static string UnreadDocuments = RES.InventoryUnreadDocumentsText;
+        public static string UsableWithoutUMDCheck = RES.InventoryUsableWithoutUMDText;
+        public static string CurrentEquipped = RES.InventoryCurrentEquippedText;
+        public static string NonZeroPW = RES.InventoryNonZeroPWText;
+        public static string PriceWeightAscending = RES.InventoryPriceWeightAscendingText;
+        public static string PriceWeightDescending = RES.InventoryPriceWeightDescendingText;
     }
 
     public static class SpellbookStrings
     {
-        public static string EnterSpellName = "Enter spell name...";
-        public static string NoFilter = "No filter";
-        public static string FilterTargets = "Spell targets {0}";
-        public static string ShowAllSpellLevels = "Show all spells levels";
-        public static string ShowMetamagic = "Show metamagic";
-        public static string ShowUnlearnedSpells = "Show unlearned spells";
-        public static string LearnScrolls = "Learn {0} scrolls";
+        public static string EnterSpellName = RES.SpellbookSearchBarText;
+        public static string NoFilter = RES.SpellbookSearchFilterNoFilterText;
+        public static string FilterTargets = RES.SpellbookSearchFilterTargetsText;
+        public static string ShowAllSpellLevels = RES.SpellbookShowAllSpellLevelsCheckboxText;
+        public static string ShowMetamagic = RES.SpellbookShowMetamagicCheckboxText;
+        public static string ShowUnlearnedSpells = RES.SpellbookShowUnlearnedSpellsCheckboxText;
+        public static string LearnScrolls = RES.SpellbookLearnableScrollsButtonText;
     }
 }
