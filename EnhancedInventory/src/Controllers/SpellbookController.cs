@@ -293,7 +293,7 @@ namespace EnhancedInventory.Controllers
                 if (level == null) return;
 
                 // Changing the selected level nothing for our view unless we're viewing all spells.
-                if (!m_all_spells_checkbox.isOn || level.Level == 10 || m_last_spell_level == 10)
+                if (!m_all_spells_checkbox.isOn || level.Level == 11 || m_last_spell_level == 11)
                 {
                     m_deferred_update = true;
                     m_scroll_bar.ScrollToTop();
@@ -340,14 +340,14 @@ namespace EnhancedInventory.Controllers
 
             int spellbook_level = m_spellbook_level.Value.Level;
 
-            for (int level = 0; level <= 9; ++level)
+            for (int level = 0; level <= 10; ++level)
             {
-                if (!m_all_spells_checkbox.isOn && spellbook_level != 10 && level != spellbook_level) continue;
+                if (!m_all_spells_checkbox.isOn && spellbook_level != 11 && level != spellbook_level) continue;
 
                 foreach (AbilityData spell in UIUtilityUnit.GetKnownSpellsForLevel(level, m_spellbook.Value))
                 {
                     if (!m_metamagic_checkbox.isOn && spell.MetamagicData != null) continue;
-                    if (spellbook_level == 10 && spell.MetamagicData == null) continue;
+                    if (spellbook_level == 11 && spell.MetamagicData == null) continue;
 
                     if (ShouldShowSpell(spell.Blueprint, (SpellbookFilter)m_search_bar.Dropdown.value))
                     {
@@ -367,7 +367,7 @@ namespace EnhancedInventory.Controllers
 
             int spellbook_level = m_spellbook_level.Value.Level;
 
-            if (spellbook_level != 10)
+            if (spellbook_level != 11)
             {
                 for (int level = 0; level <= 9; ++level)
                 {
