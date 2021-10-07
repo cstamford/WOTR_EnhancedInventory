@@ -25,6 +25,7 @@ namespace EnhancedInventory.Hooks
             if (Main.Settings.CollectAllZeroWeightItems && item.Blueprint.Weight <= 0.0f) return true;
             if (Main.Settings.CollectAllUnidentifiedItems && !item.IsIdentified) return true;
             if (Main.Settings.CollectAllWeightValue && item.Blueprint.Cost / item.Blueprint.Weight >= Main.Settings.CollectAllWeightValueCutoff) return true;
+            if (Main.Settings.CollectAllNotableItems && item.Blueprint.IsNotable) return true;
 
             CopyScroll scroll = item.Blueprint.GetComponent<CopyScroll>();
             CopyRecipe recipe = item.Blueprint.GetComponent<CopyRecipe>();
