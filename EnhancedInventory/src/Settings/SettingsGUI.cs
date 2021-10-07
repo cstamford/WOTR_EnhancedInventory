@@ -235,6 +235,10 @@ namespace EnhancedInventory
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
+            Main.Settings.CollectAllNotableItems = GUILayout.Toggle(Main.Settings.CollectAllNotableItems, " Collect all notable (golden border) items");
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
             Main.Settings.CollectAllWeightValue = GUILayout.Toggle(Main.Settings.CollectAllWeightValue, " Use price / weight cutoff for loot (10 = masterwork weapon) ");
             string cutoff = GUILayout.TextField(Main.Settings.CollectAllWeightValueCutoff.ToString(), GUILayout.MinWidth(30));
             GUILayout.FlexibleSpace();
