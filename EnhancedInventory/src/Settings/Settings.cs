@@ -122,6 +122,7 @@ namespace EnhancedInventory.Settings
         public bool CollectAllUsefulItems = true;
         public bool CollectAllWeightValue = true;
         public float CollectAllWeightValueCutoff = 10.0f;
+        public bool CollectAllNotableItems = true;
 
         public InventorySearchCriteria InventorySearchCriteria = InventorySearchCriteria.Default;
         public SpellbookSearchCriteria SpellbookSearchCriteria = SpellbookSearchCriteria.Default;
