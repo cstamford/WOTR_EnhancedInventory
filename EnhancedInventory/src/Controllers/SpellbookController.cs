@@ -128,7 +128,8 @@ namespace EnhancedInventory.Controllers
 
             // Move the levels display (which is still used for displaying memorized spells).
             Transform levels = transform.Find("MainContainer/Levels");
-            levels.localPosition = new Vector2(400.0f, 385.0f);
+            levels.GetComponent<HorizontalLayoutGroupWorkaround>().childAlignment = TextAnchor.MiddleLeft;
+            levels.localPosition = new Vector2(739.0f, 385.0f);
 
             // Shamelessly steal a button from the inventory and repurpose it for our nefarious deeds.
             GameObject learn_spells_object = Instantiate(transform.parent.parent.Find("CharacterInfoView/CharacterScreen/Menu/Button").gameObject, transform.Find("MainContainer"));
