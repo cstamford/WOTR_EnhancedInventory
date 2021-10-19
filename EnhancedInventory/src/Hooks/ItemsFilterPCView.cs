@@ -39,7 +39,7 @@ namespace EnhancedInventory.Hooks
 
             int ldftn_count = 0;
 
-            for (int i = 0; i < il.Count; ++i)
+            for (int i = 0; i < il.Count && ldftn_count < 2; ++i)
             {
                 if (il[i].opcode == OpCodes.Ldftn)
                 {
@@ -52,7 +52,7 @@ namespace EnhancedInventory.Hooks
 
         // Adds the sorters to the dropdown.
         [HarmonyPostfix]
-        [HarmonyPatch(nameof(ItemsFilterPCView.Initialize))]
+        [HarmonyPatch(nameof(ItemsFilterPCView.Initialize), new Type[] { })]
         public static void Initialize(ItemsFilterPCView __instance)
         {
             __instance.m_Sorter.ClearOptions();

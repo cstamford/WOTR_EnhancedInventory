@@ -140,7 +140,7 @@ namespace EnhancedInventory.Controllers
             levels.localPosition = new Vector2(739.0f, 385.0f);
 
             // Shamelessly steal a button from the inventory and repurpose it for our nefarious deeds.
-            GameObject learn_spells_object = Instantiate(transform.parent.parent.Find("CharacterInfoView/CharacterScreen/Menu/Button").gameObject, transform.Find("MainContainer"));
+            GameObject learn_spells_object = Instantiate(transform.parent.parent.Find("CharacterInfoPCView/CharacterScreen/Menu/Button").gameObject, transform.Find("MainContainer"));
             learn_spells_object.name = "LearnAllSpells";
             learn_spells_object.transform.localPosition = new Vector2(800.0f, -430.0f);
 

@@ -40,10 +40,10 @@ namespace EnhancedInventory.Events
         private readonly (string, InventoryType)[] m_inventory_paths = new (string, InventoryType)[]
         {
             // Regular, in-game inventory.
-            ("ServiceWindowsPCView/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
+            ("ServiceWindowsPCView/InventoryPCView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
 
             // World map inventory.
-            ("ServiceWindowsConfig/InventoryView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
+            ("ServiceWindowsConfig/InventoryPCView/Inventory/Stash/StashContainer", InventoryType.InventoryStash),
 
             // Vendor screen: PC inventory view.
             ("VendorPCView/MainContent/PlayerStash", InventoryType.InventoryStash),
@@ -74,8 +74,8 @@ namespace EnhancedInventory.Events
         {
             string[] paths = new string[]
             {
-                "ServiceWindowsPCView/SpellbookView/SpellbookScreen", // game
-                "ServiceWindowsConfig/SpellbookView/SpellbookScreen", // world map
+                "ServiceWindowsPCView/SpellbookPCView/SpellbookScreen", // game
+                "ServiceWindowsConfig/SpellbookPCView/SpellbookScreen", // world map
             };
 
             foreach (string path in paths)
@@ -137,8 +137,6 @@ namespace EnhancedInventory.Events
                 item_bottom_border.anchorMax = new Vector2(1.0f, 0.0f);
                 item_bottom_border.offsetMin = new Vector2(0.0f, -2.0f);
                 item_bottom_border.offsetMax = new Vector2(0.0f, 0.0f);
-
-                GameObject.Destroy(viewport.Find("TopBorderImage").gameObject);
             }
         }
     }
