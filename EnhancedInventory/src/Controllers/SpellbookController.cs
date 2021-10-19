@@ -90,14 +90,19 @@ namespace EnhancedInventory.Controllers
             // The scroll bar is used for resetting the scroll.
             m_scroll_bar = transform.Find("MainContainer/KnownSpells/StandardScrollView").GetComponent<ScrollRectExtended>();
 
-            // Make a dummy view that does nothing - we handle the logic in here.
-            GetComponentInParent<SpellbookPCView>().m_KnownSpellsView = new DummyKnownSpellsView();
+            Transform known_spells_transform = transform.Find("MainContainer/KnownSpells");
 
             // Grab what we need from the old view then destroy it.
-            SpellbookKnownSpellsPCView old_view = GetComponentInChildren<SpellbookKnownSpellsPCView>();
+            SpellbookKnownSpellsPCView old_view = known_spells_transform.GetComponent<SpellbookKnownSpellsPCView>();
             m_known_spell_prefab = old_view.m_KnownSpellView;
             m_possible_spell_prefab = old_view.m_PossibleSpellView;
             Destroy(old_view);
+
+            // Make a dummy view that does nothing - we handle the logic in here.
+            DummyKnownSpellsView dummy = known_spells_transform.gameObject.AddComponent<DummyKnownSpellsView>();
+            dummy.m_KnownSpellView = m_known_spell_prefab;
+            dummy.m_PossibleSpellView = m_possible_spell_prefab;
+            GetComponentInParent<SpellbookPCView>().m_KnownSpellsView = dummy;
 
             // Disable the current spell level indicator, it isn't used any more.
             Destroy(transform.Find("MainContainer/Information/CurrentLevel").gameObject);
@@ -119,12 +124,15 @@ namespace EnhancedInventory.Controllers
             m_metamagic_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
             m_metamagic_checkbox.isOn = Main.Settings.SpellbookShowMetamagicByDefault;
 
-            GameObject possible_spells_button = transform.Find("MainContainer/KnownSpells/Toggle").gameObject;
+            GameObject possible_spells_button = Instantiate(transform.Find("MainContainer/KnownSpells/Toggle").gameObject, transform.Find("MainContainer/KnownSpells"));
             possible_spells_button.name = "TogglePossibleSpells";
             possible_spells_button.transform.localPosition = new Vector2(501.0f, -443.0f);
             possible_spells_button.transform.Find("Label").GetComponent<TextMeshProUGUI>().text = SpellbookStrings.ShowUnlearnedSpells;
             m_possible_spells_checkbox = possible_spells_button.GetComponent<ToggleWorkaround>();
             m_possible_spells_checkbox.onValueChanged.AddListener(delegate { m_deferred_update = true; m_scroll_bar.ScrollToTop(); });
+
+            // Hide original; keep it around for mod interop.
+            transform.Find("MainContainer/KnownSpells/Toggle").gameObject.SetActive(false);
 
             // Move the levels display (which is still used for displaying memorized spells).
             Transform levels = transform.Find("MainContainer/Levels");
