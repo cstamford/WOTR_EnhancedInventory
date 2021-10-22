@@ -17,8 +17,12 @@ namespace EnhancedInventory.Hooks
     [HarmonyPatch(typeof(ItemsFilterPCView))]
     public static class ItemsFilterPCView_
     {
-        private static MethodInfo m_set_dropdown = AccessTools.Method(typeof(ItemsFilterPCView_), nameof(SetDropdown));
-        private static MethodInfo m_set_sorter = AccessTools.Method(typeof(ItemsFilterPCView_), nameof(SetSorter));
+        private static MethodInfo[] m_cbs = new MethodInfo[]
+        {
+            AccessTools.Method(typeof(ItemsFilterPCView_), nameof(SetDropdown)),
+            AccessTools.Method(typeof(ItemsFilterPCView_), nameof(SetSorter)),
+            AccessTools.Method(typeof(ItemsFilterPCView_), nameof(ObserveFilterChange)),
+        };
 
         private static void SetDropdown(ItemsFilterPCView instance, ItemsFilter.SorterType val)
         {
@@ -30,6 +34,17 @@ namespace EnhancedInventory.Hooks
             instance.ViewModel.SetCurrentSorter((ItemsFilter.SorterType)Main.SorterMapper.To(val));
         }
 
+        private static ItemsFilter.FilterType _last_filter;
+
+        private static void ObserveFilterChange(ItemsFilterPCView instance, ItemsFilter.FilterType filter)
+        {
+            if (_last_filter != filter)
+            {
+                _last_filter = filter;
+                instance.ScrollToTop();
+            }
+        }
+
         // In BindViewImplementation, there are two inline delegates; we replace both of those in order with our own.
         [HarmonyTranspiler]
         [HarmonyPatch(nameof(ItemsFilterPCView.BindViewImplementation))]
@@ -39,11 +54,11 @@ namespace EnhancedInventory.Hooks
 
             int ldftn_count = 0;
 
-            for (int i = 0; i < il.Count && ldftn_count < 2; ++i)
+            for (int i = 0; i < il.Count && ldftn_count < m_cbs.Length; ++i)
             {
                 if (il[i].opcode == OpCodes.Ldftn)
                 {
-                    il[i].operand = ldftn_count++ == 0 ? m_set_dropdown : m_set_sorter;
+                    il[i].operand = m_cbs[ldftn_count++];
                 }
             }
 

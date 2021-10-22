@@ -242,7 +242,7 @@ namespace EnhancedInventory.Controllers
                 if (m_active_filter != null)
                 {
                     Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = m_search_bar.InputField.text;
-                    m_active_filter.Value = ((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
+                    m_active_filter.SetValueAndForceNotify((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
                     Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = null;
                 }
 
