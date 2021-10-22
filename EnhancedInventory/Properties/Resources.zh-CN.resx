@@ -163,7 +163,7 @@
     <value>意志</value>
   </data>
   <data name="SpellbookSearchFilterNoFilterText" xml:space="preserve">
-    <value>无过滤</value>
+    <value>不过滤</value>
   </data>
   <data name="SpellbookSearchFilterTargetsText" xml:space="preserve">
     <value>{0}检定法术</value>
