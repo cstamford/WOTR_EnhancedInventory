@@ -7,6 +7,7 @@ using Kingmaker.UI;
 using Kingmaker.UI.Common;
 using Kingmaker.UI.MVVM._PCView.Loot;
 using Kingmaker.UI.MVVM._PCView.ServiceWindows.Inventory;
+using Kingmaker.UI.MVVM._PCView.Slots;
 using Kingmaker.UI.MVVM._PCView.Vendor;
 using System;
 using System.Collections.Generic;
@@ -135,7 +136,7 @@ namespace EnhancedInventory.Controllers
                 {
                     if (idx <= (int)ItemsFilter.FilterType.NonUsable)
                     {
-                        switch_bar.transform.GetChild(idx).GetComponent<ToggleWorkaround>().isOn = true;
+                        switch_bar.transform.GetChild(idx).GetComponent<ItemsFilterEntityPCView>().ViewModel.IsSelected.Value = true;
                     }
                 });
 
@@ -200,7 +201,7 @@ namespace EnhancedInventory.Controllers
 
                 Transform switch_bar = m_filter_block.Find("SwitchBar");
 
-                if (switch_bar != null)
+                if (switch_bar != null && Type != InventoryType.LootCollector)
                 {
                     // Add listeners to each button; if the button changes, we change the dropdown to match.
                     foreach (ItemsFilter.FilterType filter in Enum.GetValues(typeof(ItemsFilter.FilterType)))
@@ -214,8 +215,8 @@ namespace EnhancedInventory.Controllers
                         }
                         else
                         {
-                            ToggleWorkaround toggle = switch_bar.transform.GetChild(idx).GetComponent<ToggleWorkaround>();
-                            toggle.onValueChanged.AddListener(delegate (bool on) { if (on) m_search_bar.Dropdown.value = mapped_idx; });
+                            ItemsFilterEntityPCView toggle = switch_bar.transform.GetChild(idx).GetComponent<ItemsFilterEntityPCView>();
+                            toggle.ViewModel.IsSelected.Subscribe(delegate (bool on) { if (on) m_search_bar.Dropdown.value = mapped_idx; } );
                         }
                     }
                 }
@@ -241,7 +242,7 @@ namespace EnhancedInventory.Controllers
                 if (m_active_filter != null)
                 {
                     Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = m_search_bar.InputField.text;
-                    m_active_filter.SetValueAndForceNotify((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
+                    m_active_filter.Value = ((ItemsFilter.FilterType)Main.FilterMapper.To(m_search_bar.Dropdown.value));
                     Hooks.ItemsFilter_ShouldShowItem_Blueprint.SearchContents = null;
                 }
 
@@ -259,11 +260,11 @@ namespace EnhancedInventory.Controllers
         {
             switch (type)
             {
-                case InventoryType.LootCollector: return "Filters/Filters";
-                case InventoryType.LootInventoryStash: return "Filters/PC_FilterBlock/Filters";
+                case InventoryType.LootCollector: return "Filters/PC_FilterBlock (1)/FilterPCView";
+                case InventoryType.LootInventoryStash: return "Filters/PC_FilterBlock/FilterPCView";
             }
 
-            return "PC_FilterBlock/Filters";
+            return "PC_FilterBlock/FilterPCView";
         }
 
         public static string PathToSorter(InventoryType type)

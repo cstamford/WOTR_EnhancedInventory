@@ -54,18 +54,18 @@ namespace EnhancedInventory.Controllers
 
                 if (filter_vm != null)
                 {
-                    m_handlers.Add(filter_vm.CurrentFilter.Subscribe(delegate (ItemsFilter.FilterType _) { m_deferred_update = true; }));
-                    m_handlers.Add(filter_vm.CurrentSorter.Subscribe(delegate (ItemsFilter.SorterType _) { m_deferred_update = true; }));
+                    m_handlers.Add(filter_vm.CurrentFilter.Subscribe(delegate { m_deferred_update = true; }));
+                    m_handlers.Add(filter_vm.CurrentSorter.Subscribe(delegate { m_deferred_update = true; }));
                 }
 
                 foreach (ItemSlotsGroupView view in views)
                 {
-                    m_handlers.Add(view.ViewModel.CollectionChangedCommand.Subscribe(delegate (bool _) { m_deferred_update = true; }));
+                    m_handlers.Add(view.ViewModel.CollectionChangedCommand.Subscribe(delegate { m_deferred_update = true; }));
                 }
 
                 foreach (ItemSlotPCView pc_slot in GetComponentsInChildren<ItemSlotPCView>())
                 {
-                    m_handlers.Add(pc_slot.OnDropAsObservable().Subscribe(delegate (PointerEventData _) { m_deferred_update = true; }));
+                    m_handlers.Add(pc_slot.OnDropAsObservable().Subscribe(delegate { m_deferred_update = true; }));
                 }
 
                 m_apply_handlers = false;
@@ -78,7 +78,6 @@ namespace EnhancedInventory.Controllers
                     foreach (IWidgetView widget in view.m_WidgetList.m_VisibleEntries)
                     {
                         ItemSlotView<ItemSlotVM> slot = widget as ItemSlotView<ItemSlotVM>;
-
                         if (slot == null) continue;
 
                         Transform highlight = slot.transform.Find("Item/EnhancedInventory_Highlight");
