@@ -17,7 +17,7 @@ namespace EnhancedInventory.Hooks
     [HarmonyPatch(typeof(ItemsFilterPCView))]
     public static class ItemsFilterPCView_
     {
-        private static MethodInfo[] m_cbs = new MethodInfo[]
+        private static readonly MethodInfo[] m_cbs = new MethodInfo[]
         {
             AccessTools.Method(typeof(ItemsFilterPCView_), nameof(SetDropdown)),
             AccessTools.Method(typeof(ItemsFilterPCView_), nameof(SetSorter)),
@@ -91,6 +91,13 @@ namespace EnhancedInventory.Hooks
             }
 
             __instance.m_Sorter.AddOptions(options);
+        }
+
+        [HarmonyPrefix]
+        [HarmonyPatch(nameof(ItemsFilterPCView.Initialize), new Type[] { typeof(bool) })]
+        public static void Initialize_Prefix(ref bool needReset)
+        {
+            needReset = false;
         }
     }
 }
