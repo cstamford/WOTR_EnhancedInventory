@@ -2,8 +2,7 @@
 	"Id": "EnhancedInventory",
 	"DisplayName": "Enhanced Inventory",
 	"Author": "Xenofell",
-	"Version": "1.0.8",
-	"GameVersion": "1.1.0",
+	"Version": "1.0.9",
 	"ManagerVersion": "0.23.3",
 	"LoadAfter": [ "InventorySearchBar", "WeightValueSorting", "HighlightImportantLoot" ], // legacy mods
 	"AssemblyName": "EnhancedInventory.dll",
