@@ -152,7 +152,7 @@ namespace EnhancedInventory.Controllers
 
             Destroy(existing_bg.gameObject);
             Destroy(learn_spells_object.transform.Find("Selected").gameObject);
-            Destroy(learn_spells_object.GetComponent<CharInfoMenuEntityPCView>());
+            Destroy(learn_spells_object.GetComponent<CharInfoMenuPCView>());
             Destroy(learn_spells_object.GetComponent<OwlcatMultiButton>());
 
             m_learn_scrolls_button = learn_spells_object.AddComponent<Button>();
@@ -365,9 +365,7 @@ namespace EnhancedInventory.Controllers
                 }
             }
 
-            widgets.DrawEntries(known_spells
-                .OrderBy(i => i.SpellLevel).ThenBy(i => i.DisplayName).ToArray(),
-                new List<IWidgetView> { m_known_spell_prefab });
+            widgets.DrawEntries(known_spells.OrderBy(i => i.SpellLevel).ThenBy(i => i.DisplayName), m_known_spell_prefab);
         }
 
         private void DrawPossibleSpells(WidgetListMVVM widgets)
@@ -392,9 +390,7 @@ namespace EnhancedInventory.Controllers
                 }
             }
 
-            widgets.DrawEntries(possible_spells
-                .OrderBy(i => i.m_SpellLevel).ThenBy(i => i.DisplayName).ToArray(),
-                new List<IWidgetView> { m_possible_spell_prefab });
+            widgets.DrawEntries(possible_spells.OrderBy(i => i.m_SpellLevel).ThenBy(i => i.DisplayName), m_possible_spell_prefab);
         }
 
         private void SelectMemorisationLevel(int level)
