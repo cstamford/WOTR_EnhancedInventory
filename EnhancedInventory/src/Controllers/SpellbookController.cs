@@ -28,6 +28,7 @@ using Kingmaker.Blueprints;
 using Kingmaker.Blueprints.Root;
 using Kingmaker.EntitySystem.Stats;
 using EnhancedInventory.Localization;
+using Kingmaker.UI.Group;
 
 namespace EnhancedInventory.Controllers
 {
@@ -160,7 +161,7 @@ namespace EnhancedInventory.Controllers
             {
                 m_deferred_update = true;
 
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = GroupController.Instance.GetCurrentCharacter();
                 foreach (ItemEntity item in GetLearnableScrolls())
                 {
                     CopyScroll copy = item.Blueprint.GetComponent<CopyScroll>();
@@ -403,7 +404,7 @@ namespace EnhancedInventory.Controllers
         {
             List<ItemEntity> ret = new List<ItemEntity>();
 
-            UnitEntityData unit = UIUtility.GetCurrentCharacter();
+            UnitEntityData unit = GroupController.Instance.GetCurrentCharacter();
             foreach (ItemEntity item in UIUtility.GetStashItems())
             {
                 CopyScroll scroll = item.Blueprint.GetComponent<CopyScroll>();
