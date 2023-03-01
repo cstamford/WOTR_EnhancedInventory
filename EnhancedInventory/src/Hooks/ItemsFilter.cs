@@ -9,6 +9,8 @@ using Kingmaker.EntitySystem.Entities;
 using Kingmaker.Items;
 using Kingmaker.Items.Parts;
 using Kingmaker.UI.Common;
+using Kingmaker.UI.Group;
+using Kingmaker.UI.ServiceWindow;
 using System;
 using System.Collections.Generic;
 
@@ -33,7 +35,7 @@ namespace EnhancedInventory.Hooks
             else if (expanded_filter == ExpandedFilterType.UnlearnedScrolls)
             {
                 CopyScroll scroll = item.Blueprint.GetComponent<CopyScroll>();
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = GroupController.Instance.GetCurrentCharacter();
                 __result = scroll != null && unit != null && scroll.CanCopy(item, unit);
             }
             else if (expanded_filter == ExpandedFilterType.UnlearnedRecipes)
@@ -48,14 +50,14 @@ namespace EnhancedInventory.Hooks
             }
             else if (expanded_filter == ExpandedFilterType.UsableWithoutUMD)
             {
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = GroupController.Instance.GetCurrentCharacter();
                 __result = item.Blueprint is BlueprintItemEquipmentUsable blueprint &&
                     (blueprint.Type == UsableItemType.Scroll || blueprint.Type == UsableItemType.Wand) &&
                     unit != null && !blueprint.IsUnitNeedUMDForUse(unit);
             }
             else if (expanded_filter == ExpandedFilterType.CurrentEquipped)
             {
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = GroupController.Instance.GetCurrentCharacter();
                 __result = unit != null;
 
                 if (__result)
