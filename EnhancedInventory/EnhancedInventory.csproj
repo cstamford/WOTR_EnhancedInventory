@@ -1,5 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CheckEnvironmentVars">
-
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CheckEnvironmentVars">
 	<PropertyGroup>
 		<TargetFramework>net472</TargetFramework>
 		<AssemblyVersion>1.0.*</AssemblyVersion>
@@ -16,6 +15,8 @@
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<Version>0.0.2</Version>
 		<Deterministic>false</Deterministic>
+		<OutDir>$(SolutionDir)\EnhancedInventory\bin\$(Configuration)\$(MSBuildProjectName)</OutDir>
+
 	</PropertyGroup>
 
 	<Target Name="CheckEnvironmentVars">
@@ -46,28 +47,43 @@
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<DefineConstants>TRACE</DefineConstants>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<OutputPath>$(MSBuildProjectDir)\bin\$(Configuration)\$(MSBuildProjectName)</OutputPath>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-	  <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<OutputPath>$(SolutionDir)\$(MSBuildProjectName)\bin\$(Configuration)\$(MSBuildProjectName)</OutputPath>
 	</PropertyGroup>
-
 	<ItemGroup>
-		<Reference Include="Owlcat.Runtime.Core.dll">
-			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.Core_publicized.dll'))</HintPath>
-			<Private>false</Private>
+		<PubliciseInputAssemblies Include="$(WrathInstallDir)\Wrath_Data\Managed\Assembly-CSharp.dll" />
+		<PubliciseInputAssemblies Include="$(WrathInstallDir)\Wrath_Data\Managed\Owlcat.Runtime.Core.dll" />
+		<PubliciseInputAssemblies Include="$(WrathInstallDir)\Wrath_Data\Managed\Owlcat.Runtime.UI.dll" />
+		<PubliciseInputAssemblies Include="$(WrathInstallDir)\Wrath_Data\Managed\Owlcat.Runtime.Visual.dll" />
+		<PubliciseInputAssemblies Include="$(WrathInstallDir)\Wrath_Data\Managed\Owlcat.Runtime.UniRx.dll" />
+	</ItemGroup>
+	<Target Name="Publicise" AfterTargets="BeforeBuild;Clean" Inputs="@(PubliciseInputAssemblies)" Outputs="$(SolutionDir)lib\%(PubliciseInputAssemblies.FileName)_public.dll;$(SolutionDir)lib\%(PubliciseInputAssemblies.FileName)_public.hash">
+		<Publicise InputAssemblies="@(PubliciseInputAssemblies)" OutputPath="$(SolutionDir)lib/" PubliciseCompilerGenerated="true" />
+	</Target>
+	<ItemGroup>
+		<Reference Include="Assembly-CSharp">
+			<HintPath>$(SolutionDir)lib\Assembly-CSharp_public.dll</HintPath>
+			<Private>False</Private>
 		</Reference>
-		<Reference Include="Owlcat.Runtime.UI.dll">
-			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.UI_publicized.dll'))</HintPath>
-			<Private>false</Private>
+		<Reference Include="Owlcat.Runtime.UI_public">
+			<HintPath>$(SolutionDir)lib\Owlcat.Runtime.Core_public.dll</HintPath>
+			<Private>False</Private>
 		</Reference>
-		<Reference Include="Owlcat.Runtime.Visual.dll">
-			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.Visual_publicized.dll'))</HintPath>
-			<Private>false</Private>
+		<Reference Include="Owlcat.Runtime.UI_public">
+			<HintPath>$(SolutionDir)lib\Owlcat.Runtime.UI_public.dll</HintPath>
+			<Private>False</Private>
 		</Reference>
-		<Reference Include="Owlcat.Runtime.UniRx.dll">
-			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Owlcat.Runtime.UniRx_publicized.dll'))</HintPath>
-			<Private>false</Private>
+		<Reference Include="Owlcat.Runtime.UI_public">
+			<HintPath>$(SolutionDir)lib\Owlcat.Runtime.Visual_public.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Owlcat.Runtime.UI_public">
+			<HintPath>$(SolutionDir)lib\Owlcat.Runtime.UniRx_public.dll</HintPath>
+			<Private>False</Private>
 		</Reference>
 		<Reference Include="Unity.Burst.dll">
 			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\Unity.Burst.dll'))</HintPath>
@@ -401,10 +417,6 @@
 			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\UnityModManager\0Harmony.dll'))</HintPath>
 			<Private>false</Private>
 		</Reference>
-		<Reference Include="Assembly-CSharp_publicized">
-			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\publicized_assemblies\Assembly-CSharp_publicized.dll'))</HintPath>
-			<Private>false</Private>
-		</Reference>
 		<Reference Include="NewtonSoft.Json">
 			<HintPath>$([System.IO.Path]::Combine($(WrathInstallDir), 'Wrath_Data\Managed\NewtonSoft.Json.dll'))</HintPath>
 			<Private>False</Private>
@@ -419,14 +431,18 @@
 		<None Include="..\README.md" Link="README.md">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+		<PackageReference Include="Aze.Publicise.MSBuild.Task" Version="1.1.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<Compile Update="Properties\Resources.Designer.cs">
-		  <DesignTime>True</DesignTime>
-		  <AutoGen>True</AutoGen>
-		  <DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
 		</Compile>
 		<EmbeddedResource Update="Properties\Resources.resx">
-		  <Generator>ResXFileCodeGenerator</Generator>
-		  <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 		</EmbeddedResource>
 		<None Update="Info.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -435,5 +451,19 @@
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
+	<PropertyGroup>
+		<PostBuildEvent>echo "\$(OutDir)" "&gt;$(WrathInstallDir)\Mods\$(MSBuildProjectName)\$(MSBuildProjectName).dll*"
+xcopy /Y "$(OutDir)\$(MSBuildProjectName).dll" "$(WrathInstallDir)\Mods\$(MSBuildProjectName)\$(MSBuildProjectName).dll*"
+xcopy /Y "$(OutDir)\$(MSBuildProjectName).pdb" "$(WrathInstallDir)\Mods\$(MSBuildProjectName)\$(MSBuildProjectName).pdb*"
+xcopy /Y "$(MSBuildProjectDirectory)\Info.json" "$(WrathInstallDir)\Mods\$(MSBuildProjectName)\Info.json*"
+xcopy /Y "$(MSBuildProjectDirectory)\Repository.json" "$(WrathInstallDir)\Mods\$(MSBuildProjectName)\Repository.json*"
+cd "$(MSBuildProjectDirectory)\$(OutputPath)"
+powershell.exe -ExecutionPolicy Unrestricted -f "$(SolutionDir)\EnhancedInventory\zip-hash-sign.ps1"
+		</PostBuildEvent>
+	</PropertyGroup>
+	<PropertyGroup>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
 </Project>
 
