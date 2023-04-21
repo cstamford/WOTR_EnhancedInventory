@@ -15,12 +15,14 @@ using System.Collections.Generic;
 namespace EnhancedInventory.Hooks
 {
     // Hook #1 out of #2 for filtering - this hook handled the custom filter categories.
-    [HarmonyPatch(typeof(ItemsFilter), nameof(ItemsFilter.ShouldShowItem), new Type[] { typeof(ItemEntity), typeof(ItemsFilter.FilterType) })]
+    [HarmonyPatch(typeof(ItemsFilter), nameof(ItemsFilter.ShouldShowItem), new Type[] { typeof(BlueprintItem), typeof(ItemsFilter.FilterType), typeof(ItemEntity) })]
     public static class ItemsFilter_ShouldShowItem_ItemEntity
     {
         // Here, we handle filtering any expanded categories that we have.
         [HarmonyPrefix]
-        public static bool Prefix(ItemEntity item, ItemsFilter.FilterType filter, ref bool __result)
+        public static bool Prefix(BlueprintItem blueprintItem,
+            ItemsFilter.FilterType filter,
+            ItemEntity item, ref bool __result)
         {
             ExpandedFilterType expanded_filter = (ExpandedFilterType)filter;
 
@@ -33,7 +35,7 @@ namespace EnhancedInventory.Hooks
             else if (expanded_filter == ExpandedFilterType.UnlearnedScrolls)
             {
                 CopyScroll scroll = item.Blueprint.GetComponent<CopyScroll>();
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = Extensions.GetCurrentCharacter();
                 __result = scroll != null && unit != null && scroll.CanCopy(item, unit);
             }
             else if (expanded_filter == ExpandedFilterType.UnlearnedRecipes)
@@ -48,14 +50,14 @@ namespace EnhancedInventory.Hooks
             }
             else if (expanded_filter == ExpandedFilterType.UsableWithoutUMD)
             {
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = Extensions.GetCurrentCharacter();
                 __result = item.Blueprint is BlueprintItemEquipmentUsable blueprint &&
                     (blueprint.Type == UsableItemType.Scroll || blueprint.Type == UsableItemType.Wand) &&
                     unit != null && !blueprint.IsUnitNeedUMDForUse(unit);
             }
             else if (expanded_filter == ExpandedFilterType.CurrentEquipped)
             {
-                UnitEntityData unit = UIUtility.GetCurrentCharacter();
+                UnitEntityData unit = Extensions.GetCurrentCharacter();
                 __result = unit != null;
 
                 if (__result)
@@ -91,7 +93,7 @@ namespace EnhancedInventory.Hooks
     }
 
     // Hook #2 out of #2 for filtering - this hook handles filtering based on string search.
-    [HarmonyPatch(typeof(ItemsFilter), nameof(ItemsFilter.ShouldShowItem), new Type[] { typeof(BlueprintItem), typeof(ItemsFilter.FilterType) })]
+    [HarmonyPatch(typeof(ItemsFilter), nameof(ItemsFilter.ShouldShowItem), new Type[] { typeof(BlueprintItem), typeof(ItemsFilter.FilterType), typeof(ItemEntity) })]
     public static class ItemsFilter_ShouldShowItem_Blueprint
     {
         public static string SearchContents = null;
@@ -99,7 +101,9 @@ namespace EnhancedInventory.Hooks
         // Prefix: If we're filtering one of the expanded categories, we require more than the blueprint - we require the instance.
         // If someone calls the function to check the blueprint directly, for expanded categories, we must simply allow everything.
         [HarmonyPrefix]
-        public static bool Prefix(ItemsFilter.FilterType filter, ref bool __result)
+        public static bool Prefix(BlueprintItem blueprintItem,
+            ItemsFilter.FilterType filter,
+            ItemEntity item, ref bool __result)
         {
             __result = true;
             return (int)filter < (int)ExpandedFilterType.QuickslotUtilities;
@@ -107,7 +111,9 @@ namespace EnhancedInventory.Hooks
 
         // Postfix: We apply the string match, if any, to the resulting matches from the original call (or our prefix).
         [HarmonyPostfix]
-        public static void Postfix(BlueprintItem blueprintItem, ref bool __result)
+        public static void Postfix(BlueprintItem blueprintItem,
+            ItemsFilter.FilterType filter,
+            ItemEntity item, ref bool __result)
         {
             if (__result && !string.IsNullOrWhiteSpace(SearchContents))
             {

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Kingmaker;
+using Kingmaker.EntitySystem.Entities;
+using UnityEngine;
 
 namespace EnhancedInventory.Util
 {
@@ -12,6 +14,10 @@ namespace EnhancedInventory.Util
             }
                 
             return current.parent.GetPath() + "/" + current.name;
+        }
+        public static UnitEntityData GetCurrentCharacter() {
+            var firstSelectedUnit = Game.Instance.SelectionCharacter.FirstSelectedUnit;
+            return (object)firstSelectedUnit != null ? firstSelectedUnit : (UnitEntityData)Game.Instance.Player.MainCharacter;
         }
     }
 }
